@@ -15,7 +15,7 @@ const frmStyles = StyleSheet.create({
   input: {
     marginTop: 8,
     marginBottom: 8,
-    fontSize: 18,
+    fontSize: 20,
     width: '100%',
     height: 50,
     borderRadius: 8,
@@ -23,6 +23,9 @@ const frmStyles = StyleSheet.create({
     borderWidth: 1,
     borderColor: '#cbc9c9',
     backgroundColor: '#eaeaea',
+  },
+  txtButton: {
+    fontSize: 20,
   },
   btnsubmit: {
     width: '100%',
@@ -40,7 +43,7 @@ const frmStyles = StyleSheet.create({
   txtsubmit: {
     color: '#ffffff',
     fontWeight: '500',
-    fontSize: 18,
+    fontSize: 20,
   },
   txterror: {
     color: '#990000',

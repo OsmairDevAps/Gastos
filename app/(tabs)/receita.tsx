@@ -3,10 +3,10 @@ import { View, Text, TextInput, Alert, TouchableOpacity, ActivityIndicator } fro
 import { useForm, Controller } from 'react-hook-form'
 import { z } from 'zod'
 import MaskInput, { Masks } from 'react-native-mask-input';
+import { DateTimePickerAndroid, DateTimePickerEvent } from '@react-native-community/datetimepicker';
 import styles from '@/styles/receita'
 import frmStyles from '@/styles/form'
 import { useTransaction } from '@/database/useTransaction';
-import { Feather } from '@expo/vector-icons';
 import { parseDataBrParaDate } from '@/utils/functions';
 
 const receitaSchema = z.object({
@@ -14,8 +14,10 @@ const receitaSchema = z.object({
 })
 
 type FormData = z.infer<typeof receitaSchema>;
+type DateTimePickerMode = 'date' | 'time';
 
 export default function Receita() {
+  const [date, setDate] = useState(new Date());
   const [isSubmitting, setIsSubmitting] = useState(false);
   const transactionDatabase = useTransaction()
   const [descricao, setDescricao] = useState('')
@@ -26,6 +28,26 @@ export default function Receita() {
       valor: ''
     }
   });
+  
+  const onChange = (event: DateTimePickerEvent, selectedDate?: Date) => {
+    if (event.type === 'set' && selectedDate) {
+      const currentDate = selectedDate;
+      setDate(currentDate);
+    }
+  };
+
+  const showMode = (currentMode: DateTimePickerMode) => {
+    DateTimePickerAndroid.open({
+      value: date,
+      onChange,
+      mode: currentMode,
+      is24Hour: true,
+    });
+  };
+
+  const showDatepicker = () => {
+    showMode('date');
+  };
 
   function resetForm() {
     setDescricao('')
@@ -34,6 +56,7 @@ export default function Receita() {
   }
 
   async function onSubmit(dataForm: FormData) {
+    setIsSubmitting(true); // começa o loading
     const rawValue = dataForm.valor.replace(/\D/g, '');
     const finalValue = parseFloat(rawValue) / 100;
     const dataConvertida = parseDataBrParaDate(data);
@@ -64,14 +87,12 @@ export default function Receita() {
         <View style={frmStyles.container}>
           <View style={frmStyles.grupoInput}>
             <Text style={frmStyles.label}>Data da venda:</Text>
-            <MaskInput
-              value={data}
-              onChangeText={(masked) => setData(masked)}
-              mask={Masks.DATE_DDMMYYYY}
-              keyboardType="numeric"
-              placeholder="dd/mm/aaaa"
+            <TouchableOpacity 
+              onPress={showDatepicker} 
               style={frmStyles.input}
-            />
+            >
+              <Text style={frmStyles.txtButton}>{date.toLocaleString()}</Text>
+            </TouchableOpacity>
           </View>
 
           <View style={frmStyles.grupoInput}>
