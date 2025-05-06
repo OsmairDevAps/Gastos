@@ -1,18 +1,18 @@
 import { supabase } from "./supabase";
-import { ITransaction } from "../utils/interface"; 
+import { ITransaction } from "../utils/interface";
 
 export function useTransaction() {
   async function create(dataTransaction: Omit<ITransaction, "id">) {
     try {
       const insertedRow = await supabase
-      .from('transacoes')
-      .insert({
-        data: dataTransaction.data,
-        tipo: dataTransaction.tipo,
-        descricao: dataTransaction.descricao,
-        quant: dataTransaction.quant,
-        valor: dataTransaction.valor
-      })
+        .from('transacoes')
+        .insert({
+          data: dataTransaction.data,
+          tipo: dataTransaction.tipo,
+          descricao: dataTransaction.descricao,
+          quant: dataTransaction.quant,
+          valor: dataTransaction.valor
+        })
       return { insertedRow }
     } catch (error) {
       throw error
@@ -22,15 +22,15 @@ export function useTransaction() {
   async function update(dataTransaction: ITransaction) {
     try {
       await supabase
-      .from('transacoes')
-      .update({
-        data: dataTransaction.data,
-        tipo: dataTransaction.tipo,
-        descricao: dataTransaction.descricao,
-        quant: dataTransaction.quant,
-        valor: dataTransaction.valor
-      })
-      .eq('id', dataTransaction.id)
+        .from('transacoes')
+        .update({
+          data: dataTransaction.data,
+          tipo: dataTransaction.tipo,
+          descricao: dataTransaction.descricao,
+          quant: dataTransaction.quant,
+          valor: dataTransaction.valor
+        })
+        .eq('id', dataTransaction.id)
     } catch (error) {
       throw error
     }
@@ -44,13 +44,15 @@ export function useTransaction() {
     }
   }
 
-  async function list(tipo: string) {
+  async function list(tipo: string, inicio: string, fim: string) {
     try {
       const { data } = await supabase
         .from('transacoes')
         .select('*')
         .eq('tipo', tipo)
-        .order('data', {ascending: true})
+        .gte('data', inicio)
+        .lte('data', fim)
+        .order('data', { ascending: true })
       return data
     } catch (error) {
       console.log(error)
@@ -65,6 +67,6 @@ export function useTransaction() {
       console.log(error)
     }
   }
-  
+
   return { create, update, remove, list, searchById }
 }
