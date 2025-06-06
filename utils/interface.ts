@@ -6,3 +6,24 @@ export interface ITransaction {
   quant: string;
   valor: number;
 }
+
+//produtoscompras
+export interface IProdutoCompra {
+  id: number;
+  categoria: string;
+  item: string;
+  quantidade: number;
+  medida: string;
+  marcado?: boolean;
+}
+
+//listacompras
+export interface IItemCompra {
+  id: number;
+  categoria: string;
+  idproduto: number;
+  datacompra: Date;
+  valor: number;
+  adquirido: boolean;
+  localadquirido: string;
+}

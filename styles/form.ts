@@ -8,9 +8,11 @@ const frmStyles = StyleSheet.create({
   label: {
     fontWeight: '600',
     fontSize: 18,
+    marginTop: 10,
   },
   grupoInput: {
-    
+    display: 'flex',
+    marginBottom: 4,
   },
   input: {
     marginTop: 8,
@@ -62,7 +64,7 @@ const frmStyles = StyleSheet.create({
     alignItems: 'center',
     padding: 8,
     borderRadius: 8,
-    backgroundColor: '#0d8199',
+    backgroundColor: '#000000',
     alignSelf: 'flex-end', // Alinha ao final se necessário
   },
   txtsubmit: {
