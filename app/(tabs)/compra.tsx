@@ -26,7 +26,7 @@ export default function Compra() {
             keyExtractor={(item) => String(item.id)}
             renderItem={({ item }) => (
               <View style={frmStyles.grupoInput}>
-                <Item produto={item} />
+                
               </View>
             )}
           />

@@ -3,7 +3,8 @@ import { StyleSheet } from 'react-native';
 const frmStyles = StyleSheet.create({
   container: {
     flexGrow: 1,
-    padding: 16,
+    paddingLeft: 16,
+    paddingRight: 16,
   },
   label: {
     fontWeight: '600',

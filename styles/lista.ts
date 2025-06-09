@@ -17,6 +17,9 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
     alignItems: 'center',
     padding: 8,
+    backgroundColor: '#cecece',
+    borderBottomWidth: 1,
+    borderBottomColor: '#000000',
   },
   texto: {
     fontWeight: '500',
@@ -37,6 +40,14 @@ const styles = StyleSheet.create({
   label: {
     fontWeight: '500',
     fontSize: 16
+  },
+  modal: {
+    margin: 20,
+    backgroundColor: 'white',
+    borderRadius: 20,
+    padding: 35,
+    alignItems: 'center',
+    shadowColor: '#000',
   }
 });
 

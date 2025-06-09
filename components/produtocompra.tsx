@@ -4,16 +4,19 @@ import { IProdutoCompra } from "@/utils/interface";
 
 type Props = {
   produto: IProdutoCompra;
+  adicionarProduto: (prod: IProdutoCompra) => void;
+  produtosSelecionados: IProdutoCompra[]; // ou string[] se for só IDs
 }
 
-export default function ProdutoCompra({produto}: Props) {
+export default function ProdutoCompra({produto, adicionarProduto, produtosSelecionados}: Props) {
+  const estaSelecionado = produtosSelecionados.some(p => p.id === produto.id);
   function handleChange(prod: IProdutoCompra) {
-    // console.log(prod.marcado)
+    adicionarProduto(prod)
   }
 
   return (
     <TouchableOpacity style={styles.container} onPress={()=>handleChange(produto)}>
-      {produto.marcado ? 
+      {estaSelecionado ? 
         <AntDesign size={28} name="checksquare" /> :
         <FontAwesome6 size={24} name="square-full" />
       }

@@ -23,6 +23,7 @@ export interface IItemCompra {
   categoria: string;
   idproduto: number;
   datacompra: Date;
+  marcado: boolean;
   valor: number;
   adquirido: boolean;
   localadquirido: string;
