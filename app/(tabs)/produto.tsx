@@ -118,13 +118,13 @@ export default function Produto() {
         <ButtonTitle titulo="Salvar" onPress={handleSave} />
       </View>
 
-      <Modal 
-        style={styles.modal}
-        animationType="slide"
+      <Modal
         transparent={true}
+        animationType='slide'
         visible={isOpenModal}
-        onRequestClose={()=>setIsOpenModal}
-      >
+        onRequestClose={() => {
+           setIsOpenModal(!isOpenModal)
+      }}>
         <AdicionaProduto setIsModalOpen={setIsOpenModal} />
       </Modal>
     </View>

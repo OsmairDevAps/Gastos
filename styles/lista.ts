@@ -42,12 +42,12 @@ const styles = StyleSheet.create({
     fontSize: 16
   },
   modal: {
-    margin: 20,
-    backgroundColor: 'white',
-    borderRadius: 20,
-    padding: 35,
-    alignItems: 'center',
-    shadowColor: '#000',
+    marginTop: 70,
+    padding: 10,
+    backgroundColor: '#ffffff',
+    borderWidth: 1,
+    borderColor: '#000000',
+    shadowColor: '#000000',
   }
 });
 
