@@ -6,20 +6,22 @@ type Props = {
   options: string[];
   onSelect: (value: string) => void;
 }
+
 export default function SelectWithInput({ options, onSelect }: Props) {
   const [input, setInput] = useState('');
   const [filteredOptions, setFilteredOptions] = useState<string[]>([]);
   const [showOptions, setShowOptions] = useState(false);
 
   const handleChange = (text: string) => {
-    setInput(text);
-    if (text.trim() === '') {
+    const upperText = text.toUpperCase();
+    setInput(upperText);
+    if (upperText.trim() === '') {
       setShowOptions(false);
       setFilteredOptions([]);
       return;
     }
     const filtered = options.filter(opt =>
-      opt.toUpperCase().includes(text.toUpperCase())
+      opt.toUpperCase().includes(upperText)
     );
     setFilteredOptions(filtered);
     setShowOptions(true); // 👈 mostra lista ao digitar
@@ -49,18 +51,23 @@ export default function SelectWithInput({ options, onSelect }: Props) {
           }}
         />
 
-        {showOptions && filteredOptions.length > 0 && (
-          <FlatList
-            style={styles.list}
-            data={filteredOptions}
-            keyExtractor={(item) => item}
-            renderItem={({ item }) => (
-              <TouchableOpacity onPress={() => handleSelect(item)} style={styles.option}>
-                <Text>{item}</Text>
-              </TouchableOpacity>
-            )}
-          />
-        )}
+        {showOptions && (
+        <FlatList
+          style={styles.list}
+          data={filteredOptions.length > 0 ? filteredOptions : [input]}
+          keyExtractor={(item) => item}
+          renderItem={({ item }) => (
+            <TouchableOpacity
+              onPress={() => handleSelect(item)}
+              style={styles.option}
+            >
+              <Text>
+                {filteredOptions.length > 0 ? item : `Criar nova categoria: "${item}"`}
+              </Text>
+            </TouchableOpacity>
+          )}
+        />
+      )}
       </View>
     </TouchableWithoutFeedback>
   );

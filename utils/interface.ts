@@ -12,9 +12,7 @@ export interface IProdutoCompra {
   id: number;
   categoria: string;
   item: string;
-  quantidade: number;
   medida: string;
-  marcado?: boolean;
 }
 
 //listacompras

@@ -1,15 +1,19 @@
-import { Text, TextInput, View } from "react-native";
+import { Alert, Text, TextInput, View } from "react-native";
 import styles from '@/styles/lista'
 import ButtonTitle from "./buttontitle";
 import frmStyles from "@/styles/form";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import SelectWithInput from "./selectwithinput";
+import { useProdutosCompras } from "@/database/useProdutosCompras";
 
 type Props = {
   setIsModalOpen: (isOpen: boolean) => void;
+  listaAtualizar: () => void;
 }
 
-export default function AdicionaProduto({ setIsModalOpen }: Props) {
+export default function AdicionaProduto({ setIsModalOpen, listaAtualizar }: Props) {
+  const produtosDatabase = useProdutosCompras()
+  const [categorias, setCategorias] = useState<string[]>([])
   const [categoria, setCategoria] = useState('')
   const [produto, setProduto] = useState('')
   const [medida, setMedida] = useState('')
@@ -22,15 +26,41 @@ export default function AdicionaProduto({ setIsModalOpen }: Props) {
     return valor.toUpperCase() 
   }
 
-  function handleSave() {
+  async function ListaCategorias() {
+    let arrayCategoria:string[] = []
+    try {
+      const response = await produtosDatabase.listarCategorias()
+      if (response) {
+        response.map(item => {
+          arrayCategoria.push(item.categoria)
+        })
+      }
+      setCategorias(arrayCategoria)
+    } catch (error) {
+      console.log(error)
+    }
+  }
+
+  async function handleSave() {
     const dados = {
       categoria: categoria,
       item: produto,
-      medida: medida,
+      medida: medida
     }
-    console.log(dados)
-    setIsModalOpen(false)
+    try {
+      await produtosDatabase.criar(dados)
+      Alert.alert('Produto cadastrado com sucesso!')
+      setProduto('')
+      setMedida('')
+      listaAtualizar()
+    } catch (error) {
+      console.log(error)
+    }
   }
+
+  useEffect(()=> {
+    ListaCategorias()
+  },[])
 
   return (
     <View style={styles.modal}>
@@ -42,7 +72,7 @@ export default function AdicionaProduto({ setIsModalOpen }: Props) {
       <View style={frmStyles.container}>
         <View style={frmStyles.grupoInput}>
           <Text style={frmStyles.label}>Categoria:</Text>
-          <SelectWithInput options={['BEBIDAS','CARNES']} onSelect={setCategoria} />          
+          <SelectWithInput options={categorias} onSelect={setCategoria} />          
         </View>
 
         <View style={frmStyles.grupoInput}>

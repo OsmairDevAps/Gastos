@@ -1,12 +1,13 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Alert, Text, View, SectionList, TouchableOpacity, Modal } from "react-native";
 import { DateTimePickerAndroid, DateTimePickerEvent } from '@react-native-community/datetimepicker';
 import frmStyles from "@/styles/form";
 import ButtonTitle from "@/components/buttontitle";
 import Item from "@/components/produtocompra";
 import { DProdutos } from "@/utils/database";
-import { IItemCompra, IProdutoCompra } from "@/utils/interface";
+import { IProdutoCompra } from "@/utils/interface";
 import { useListaCompras } from "@/database/useListaCompras";
+import { useProdutosCompras } from "@/database/useProdutosCompras";
 import styles from '@/styles/lista'
 import AdicionaProduto from "@/components/adicionaProduto";
 
@@ -14,7 +15,9 @@ type DateTimePickerMode = 'date' | 'time';
 
 export default function Produto() {
   const itemCompraDatabase = useListaCompras()
+  const produtosDatabase = useProdutosCompras()
   const [date, setDate] = useState(new Date());
+  const [produtosCompra, setProdutosCompra] = useState<IProdutoCompra[]>([])
   const [produtos, setProdutos] = useState<IProdutoCompra[]>([])
   const [isOpenModal, setIsOpenModal] = useState(false)
   const adicionarProduto = (prod: IProdutoCompra) => {
@@ -63,19 +66,41 @@ export default function Produto() {
     }));
   };
 
-  const sections = agruparPorCategoria(DProdutos);
+  const sections = agruparPorCategoria(produtosCompra);
 
   function AbreModal() {
     setIsOpenModal(true)
   }
 
-  function handleSave() {
-    const dados = {
-      dia: date,
-      produtos: produtos
+  async function ListaProdutos() {
+    try {
+      const response = await produtosDatabase.listarProdutos()
+      if (response) {
+        setProdutosCompra(response)
+      }
+    } catch (error) {
+      console.log(error)
     }
-    console.log('Inclusao: ', dados)
   }
+
+  async function handleSave() {
+    produtos.map(async(item) => {
+      await itemCompraDatabase.criar({
+        categoria: item.categoria,
+        idproduto: item.id,
+        datacompra: date,
+        marcado: false,
+        valor: 0,
+        adquirido: false,
+        localadquirido: '',
+      })
+    })
+    Alert.alert('Incluídos com sucesso!')
+  }
+
+  useEffect(()=> {
+    ListaProdutos()
+  }, [])
 
   return (
     <View style={styles.container}>
@@ -125,7 +150,7 @@ export default function Produto() {
         onRequestClose={() => {
            setIsOpenModal(!isOpenModal)
       }}>
-        <AdicionaProduto setIsModalOpen={setIsOpenModal} />
+        <AdicionaProduto setIsModalOpen={setIsOpenModal} listaAtualizar={ListaProdutos} />
       </Modal>
     </View>
   )

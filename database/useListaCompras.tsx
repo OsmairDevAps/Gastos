@@ -36,6 +36,17 @@ export function useListaCompras() {
     }
   }
 
+  async function listar() {
+    try {
+      const { data } = await supabase
+        .from('view_itens_compra')
+        .select('*')
+      return data
+    } catch (error) {
+      throw error
+    }
+  }
+
   async function listarPorData(dataCompra: Date) {
     try {
       const { data } = await supabase
@@ -49,5 +60,5 @@ export function useListaCompras() {
     }
   }
 
-return { criar, atualizar, listarPorData }
+return { criar, atualizar, listar, listarPorData }
 }
