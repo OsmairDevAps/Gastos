@@ -9,12 +9,13 @@ import frmStyles from "@/styles/form";
 export type TListaCompraProps = {
   id: number;
   item: string;
+  diacompra: Date;
   datacompra: Date;
   marcado: boolean;
   adquirido: boolean;
 }
 
-type DateTimePickerMode = 'date' | 'time';
+type DateTimePickerMode = 'date';
 
 export default function Compra() {
   const [date, setDate] = useState(new Date());
@@ -33,7 +34,6 @@ export default function Compra() {
       value: date,
       onChange,
       mode: currentMode,
-      is24Hour: true,
     });
   };
 
@@ -41,9 +41,9 @@ export default function Compra() {
     showMode('date');
   };
 
-  async function listarProdutos() {
+  async function listarProdutos(dtCompra: string) {
     try {
-      const response = await listaComprasDatabase.listar()
+      const response = await listaComprasDatabase.listarPorData(dtCompra)
       if (response) {
         setListaCompras(response)
       }
@@ -53,8 +53,8 @@ export default function Compra() {
   }
 
   useEffect(()=>{
-    listarProdutos()
-  }, [])
+    listarProdutos(date.toLocaleDateString('pt-BR'))
+  }, [date])
 
   return (
     <View style={styles.container}>
@@ -69,7 +69,7 @@ export default function Compra() {
             onPress={showDatepicker} 
             style={frmStyles.input}
           >
-            <Text style={frmStyles.txtButton}>{date.toLocaleString()}</Text>
+            <Text style={frmStyles.txtButton}>{date.toLocaleDateString('pt-BR')}</Text>
           </TouchableOpacity>
         </View>
 

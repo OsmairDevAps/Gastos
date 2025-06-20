@@ -47,13 +47,13 @@ export function useListaCompras() {
     }
   }
 
-  async function listarPorData(dataCompra: Date) {
+  async function listarPorData(dataCompra: string) {
     try {
       const { data } = await supabase
-        .from('listacompras')
+        .from('view_itens_compra')
         .select('*')
         .eq('datacompra', dataCompra)
-        .order('categoria', { ascending: true })
+        .order('item', { ascending: true })
       return data
     } catch (error) {
       throw error

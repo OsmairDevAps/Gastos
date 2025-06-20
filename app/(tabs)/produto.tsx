@@ -88,7 +88,7 @@ export default function Produto() {
       await itemCompraDatabase.criar({
         categoria: item.categoria,
         idproduto: item.id,
-        datacompra: date,
+        datacompra: date.toLocaleDateString('pt-BR'),
         marcado: false,
         valor: 0,
         adquirido: false,
