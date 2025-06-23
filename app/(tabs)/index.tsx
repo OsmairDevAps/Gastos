@@ -9,7 +9,7 @@ import frmStyles from '@/styles/form'
 
 export default function Home() {
   const imgBaguete = '@/assets/images/imgbaguete.png'
-  const [logged, setLogged] = useState(false)
+  const [logged, setLogged] = useState(true)
   const transactionDatabase = useTransaction()
   const [isModalVisible, setIsModalVisible] = useState(false)
   const [selectedTransaction, setSelectedTransaction] = useState<ITransaction | null>(null);
