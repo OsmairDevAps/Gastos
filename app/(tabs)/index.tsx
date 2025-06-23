@@ -1,5 +1,5 @@
 import { useEffect, useState, useCallback } from 'react'
-import { View, Text, TouchableOpacity, FlatList, Modal, TextInput } from 'react-native'
+import { View, Image, Text, TouchableOpacity, FlatList, Modal, TextInput } from 'react-native'
 import { useTransaction } from '@/database/useTransaction'
 import { ITransaction } from '@/utils/interface'
 import ViewTransaction from '../viewtransaction'
@@ -8,6 +8,8 @@ import { useFocusEffect } from '@react-navigation/native'
 import frmStyles from '@/styles/form'
 
 export default function Home() {
+  const imgBaguete = '@/assets/images/imgbaguete.png'
+  const [logged, setLogged] = useState(false)
   const transactionDatabase = useTransaction()
   const [isModalVisible, setIsModalVisible] = useState(false)
   const [selectedTransaction, setSelectedTransaction] = useState<ITransaction | null>(null);
@@ -70,131 +72,135 @@ export default function Home() {
     }, [])
   );
 
-  // useEffect(() => {
-  //   loadTransaction('D')
-  //   loadTransaction('R')
-  // },[])
-
   return (
     <View style={styles.container}>
-      <View style={styles.titleHome}>
-        <Text style={styles.titulo}>LANÇAMENTOS</Text>
-        <View style={styles.grupoFilter}>
-          <TextInput
-            style={frmStyles.inputMini}
-            value={mes}
-            onChangeText={(text) => setMes(text)}
-            keyboardType='numeric'
-          />
-          <Text>/</Text>
-          <TextInput
-            style={frmStyles.inputMini}
-            value={ano}
-            onChangeText={(text) => setAno(text)}
-            keyboardType='numeric'
-          />
-          <TouchableOpacity
-            onPress={loadTransactions}
-            style={{
-              paddingHorizontal: 12,
-              paddingVertical: 4,
-              borderColor: '#121212',
-              backgroundColor: '#aeaeae',
-              marginLeft: 4,
-              borderRadius: 8
-            }}>
-            <Text style={{ fontSize: 20 }}>Filtrar</Text>
-          </TouchableOpacity>
-        </View>
-      </View>
-
-      <FlatList
-        style={styles.styleFlat}
-        data={despesas}
-        ListHeaderComponent={() => (
-          <Text style={{ fontSize: 18, fontWeight: 'bold' }}>Despesas</Text>
-        )}
-        keyExtractor={(item) => String(item.id)}
-        renderItem={({ item, index }) => (
-          <TouchableOpacity onPress={() => handleOpenModal(item)}>
-            <View style={[styles.grupoDespesas, index % 2 === 0 ? styles.fundoImpar : styles.fundoPar]}>
-              <Text>
-                {Intl.DateTimeFormat('pt-BR', {
-                  day: '2-digit',
-                  month: '2-digit',
-                  year: 'numeric'
-                }).format(new Date(item.data))}
-              </Text>
-              <Text>
-                {Intl.NumberFormat('pt-BR', {
-                  style: 'currency',
-                  currency: 'BRL'
-                }).format(item.valor)}
-              </Text>
+      {logged ?
+        <View style={{ padding: 16}}>
+          <View style={styles.titleHome}>
+            <Text style={styles.titulo}>LANÇAMENTOS</Text>
+            <View style={styles.grupoFilter}>
+              <TextInput
+                style={frmStyles.inputMini}
+                value={mes}
+                onChangeText={(text) => setMes(text)}
+                keyboardType='numeric'
+              />
+              <Text>/</Text>
+              <TextInput
+                style={frmStyles.inputMini}
+                value={ano}
+                onChangeText={(text) => setAno(text)}
+                keyboardType='numeric'
+              />
+              <TouchableOpacity
+                onPress={loadTransactions}
+                style={{
+                  paddingHorizontal: 12,
+                  paddingVertical: 4,
+                  borderColor: '#121212',
+                  backgroundColor: '#aeaeae',
+                  marginLeft: 4,
+                  borderRadius: 8
+                }}>
+                <Text style={{ fontSize: 20 }}>Filtrar</Text>
+              </TouchableOpacity>
             </View>
-          </TouchableOpacity>
-        )}
-      />
+          </View>
 
-      <FlatList
-        style={styles.styleFlat}
-        data={receitas}
-        ListHeaderComponent={() => (
-          <Text style={{ fontSize: 18, fontWeight: 'bold' }}>Receitas</Text>
-        )}
-        keyExtractor={(item) => String(item.id)}
-        renderItem={({ item, index }) => (
-          <TouchableOpacity onPress={() => handleOpenModal(item)}>
-            <View style={[styles.grupoReceitas, index % 2 === 0 ? styles.fundoImpar : styles.fundoPar]}>
-              <Text>
-                {Intl.DateTimeFormat('pt-BR', {
-                  day: '2-digit',
-                  month: '2-digit',
-                  year: 'numeric'
-                }).format(new Date(item.data))}
-              </Text>
-              <Text>
-                {Intl.NumberFormat('pt-BR', {
-                  style: 'currency',
-                  currency: 'BRL'
-                }).format(item.valor)}
-              </Text>
+          <FlatList
+            style={styles.styleFlat}
+            data={despesas}
+            ListHeaderComponent={() => (
+              <Text style={{ fontSize: 18, fontWeight: 'bold' }}>Despesas</Text>
+            )}
+            keyExtractor={(item) => String(item.id)}
+            renderItem={({ item, index }) => (
+              <TouchableOpacity onPress={() => handleOpenModal(item)}>
+                <View style={[styles.grupoDespesas, index % 2 === 0 ? styles.fundoImpar : styles.fundoPar]}>
+                  <Text>
+                    {Intl.DateTimeFormat('pt-BR', {
+                      day: '2-digit',
+                      month: '2-digit',
+                      year: 'numeric'
+                    }).format(new Date(item.data))}
+                  </Text>
+                  <Text>
+                    {Intl.NumberFormat('pt-BR', {
+                      style: 'currency',
+                      currency: 'BRL'
+                    }).format(item.valor)}
+                  </Text>
+                </View>
+              </TouchableOpacity>
+            )}
+          />
+
+          <FlatList
+            style={styles.styleFlat}
+            data={receitas}
+            ListHeaderComponent={() => (
+              <Text style={{ fontSize: 18, fontWeight: 'bold' }}>Receitas</Text>
+            )}
+            keyExtractor={(item) => String(item.id)}
+            renderItem={({ item, index }) => (
+              <TouchableOpacity onPress={() => handleOpenModal(item)}>
+                <View style={[styles.grupoReceitas, index % 2 === 0 ? styles.fundoImpar : styles.fundoPar]}>
+                  <Text>
+                    {Intl.DateTimeFormat('pt-BR', {
+                      day: '2-digit',
+                      month: '2-digit',
+                      year: 'numeric'
+                    }).format(new Date(item.data))}
+                  </Text>
+                  <Text>
+                    {Intl.NumberFormat('pt-BR', {
+                      style: 'currency',
+                      currency: 'BRL'
+                    }).format(item.valor)}
+                  </Text>
+                </View>
+              </TouchableOpacity>
+            )}
+          />
+
+          <View style={styles.resumo}>
+            <Text style={styles.textResumo}>Total de despesas:</Text>
+            <Text style={styles.textResumo}>{Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(totalDesp)}</Text>
+          </View>
+
+          <View style={styles.resumo}>
+            <Text style={styles.textResumo}>Total de receitas:</Text>
+            <Text style={styles.textResumo}>{Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(totalRec)}</Text>
+          </View>
+
+          <View style={styles.resumo}>
+            <Text style={styles.textResumo}>SALDO FINAL: </Text>
+            <Text style={styles.textResumo}>{Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(totalRec - totalDesp)}</Text>
+          </View>
+
+          <Modal
+            visible={isModalVisible}
+            animationType="slide"
+            transparent={true}
+            onRequestClose={handleCloseModal}
+          >
+            <View style={{ padding: 4 }}>
+              {selectedTransaction && (
+                <ViewTransaction
+                  transaction={selectedTransaction}
+                  setCloseModal={setIsModalVisible}
+                  updateListTransactions={() => loadTransaction(selectedTransaction.tipo)}
+                />
+              )}
             </View>
-          </TouchableOpacity>
-        )}
-      />
-
-      <View style={styles.resumo}>
-        <Text style={styles.textResumo}>Total de despesas:</Text>
-        <Text style={styles.textResumo}>{Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(totalDesp)}</Text>
-      </View>
-
-      <View style={styles.resumo}>
-        <Text style={styles.textResumo}>Total de receitas:</Text>
-        <Text style={styles.textResumo}>{Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(totalRec)}</Text>
-      </View>
-
-      <View style={styles.resumo}>
-        <Text style={styles.textResumo}>SALDO FINAL: </Text>
-        <Text style={styles.textResumo}>{Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(totalRec - totalDesp)}</Text>
-      </View>
-
-      <Modal
-        visible={isModalVisible}
-        animationType="slide"
-        transparent={true}
-        onRequestClose={handleCloseModal}
-      >
-        <View style={{ padding: 4 }}>
-          {selectedTransaction && (
-            <ViewTransaction
-              transaction={selectedTransaction}
-              setCloseModal={setIsModalVisible}
-              updateListTransactions={() => loadTransaction(selectedTransaction.tipo)}
-            />
-          )}
+          </Modal>
+        </View> 
+        :
+        <View style={{flex: 1}}>
+          <Image source={require(imgBaguete)} />
         </View>
-      </Modal>
+      }
+
     </View>
   );
 }
