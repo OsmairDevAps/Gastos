@@ -85,15 +85,18 @@ export default function Produto() {
 
   async function handleSave() {
     produtos.map(async(item) => {
-      await itemCompraDatabase.criar({
-        categoria: item.categoria,
-        idproduto: item.id,
-        datacompra: date.toLocaleDateString('pt-BR'),
-        marcado: false,
-        valor: 0,
-        adquirido: false,
-        localadquirido: '',
-      })
+      const response = await itemCompraDatabase.verificarItemCadastrado(date.toLocaleDateString('pt-BR'),item.id)
+      if(response?.length === 0) {
+        await itemCompraDatabase.criar({
+          categoria: item.categoria,
+          idproduto: item.id,
+          datacompra: date.toLocaleDateString('pt-BR'),
+          marcado: false,
+          valor: 0,
+          adquirido: false,
+          localadquirido: '',
+        })
+      }
     })
     Alert.alert('Incluídos com sucesso!')
   }

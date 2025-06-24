@@ -15,6 +15,7 @@
     "@react-native-picker/picker": "2.11.0",
     "@react-navigation/native": "^7.0.14",
     "@supabase/supabase-js": "^2.49.4",
+    "bcryptjs": "^3.0.2",
     "expo": "53.0.11",
     "expo-datepicker": "^1.0.23",
     "expo-font": "~13.3.1",

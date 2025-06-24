@@ -1,4 +1,4 @@
-import { Text, TextInput, View, FlatList, TouchableOpacity } from "react-native";
+import { Text, TextInput, View, FlatList, TouchableOpacity, Alert } from "react-native";
 import { DateTimePickerAndroid, DateTimePickerEvent } from '@react-native-community/datetimepicker';
 import { useListaCompras } from "@/database/useListaCompras";
 import { useEffect, useState } from "react";
@@ -52,6 +52,12 @@ export default function Compra() {
     }
   }
 
+  async function deleteItem(id: number) {
+    await listaComprasDatabase.excluir(id)
+    listarProdutos(date.toLocaleDateString('pt-BR'))
+    Alert.alert('Item excluído com sucesso!')
+  }
+
   useEffect(()=>{
     listarProdutos(date.toLocaleDateString('pt-BR'))
   }, [date])
@@ -78,7 +84,7 @@ export default function Compra() {
             data={listaCompras}
             keyExtractor={(item) => String(item.id)}
             renderItem={({ item }) => (
-              <ItemListaCompra produto={item} />
+              <ItemListaCompra produto={item} onDelete={() => deleteItem(item.id)} />
             )}
           />
         </View>

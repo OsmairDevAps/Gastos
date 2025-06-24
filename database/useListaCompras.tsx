@@ -47,6 +47,19 @@ export function useListaCompras() {
     }
   }
 
+  async function verificarItemCadastrado(dataCompra: string, idProduto: number) {
+    try {
+      const { data } = await supabase
+        .from('listacompras')
+        .select('*')
+        .eq('datacompra', dataCompra)
+        .eq('idproduto', idProduto)
+      return data
+    } catch (error) {
+      throw error
+    }
+  }
+
   async function listarPorData(dataCompra: string) {
     try {
       const { data } = await supabase
@@ -60,5 +73,15 @@ export function useListaCompras() {
     }
   }
 
-return { criar, atualizar, listar, listarPorData }
+  async function excluir(id: number) {
+    try {
+      await supabase.from('listacompras')
+        .delete()
+        .eq('id', id)
+    } catch (error) {
+      throw error
+    }
+  }
+
+return { criar, atualizar, listar, verificarItemCadastrado, listarPorData, excluir }
 }

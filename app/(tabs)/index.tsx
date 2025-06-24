@@ -1,24 +1,54 @@
-import { useEffect, useState, useCallback } from 'react'
-import { View, Image, Text, TouchableOpacity, FlatList, Modal, TextInput } from 'react-native'
+import { useState, useCallback } from 'react'
+import { View, 
+  Text, 
+  TouchableOpacity, 
+  FlatList, 
+  Modal, 
+  TextInput, 
+  ImageBackground, 
+  Image,
+  ActivityIndicator
+} from 'react-native'
 import { useTransaction } from '@/database/useTransaction'
 import { ITransaction } from '@/utils/interface'
 import ViewTransaction from '../viewtransaction'
 import styles from '@/styles/home'
 import { useFocusEffect } from '@react-navigation/native'
 import frmStyles from '@/styles/form'
+import { useUsuario } from '@/database/useUsuario'
 
 export default function Home() {
   const imgBaguete = '@/assets/images/imgbaguete.png'
-  const [logged, setLogged] = useState(true)
+  const creditos = '@/assets/images/logoOA.png'
+  const [logged, setLogged] = useState(false)
   const transactionDatabase = useTransaction()
+  const usuarioDatabase = useUsuario()
+  const [isLoading, setIsLoading] = useState(false)
   const [isModalVisible, setIsModalVisible] = useState(false)
+  const [isModalLoginVisible, setIsModalLoginVisible] = useState(false)
   const [selectedTransaction, setSelectedTransaction] = useState<ITransaction | null>(null);
+  const [usuario, setUsuario] = useState('')
+  const [senha, setSenha] = useState('')
   const [mes, setMes] = useState('5')
   const [ano, setAno] = useState('2025')
   const [totalDesp, setTotalDesp] = useState(0)
   const [totalRec, setTotalRec] = useState(0)
   const [despesas, setDespesas] = useState<ITransaction[]>([])
   const [receitas, setReceitas] = useState<ITransaction[]>([])
+
+  async function SignToViewTransaction() {
+    try {
+      setIsLoading(true)
+      const response = await usuarioDatabase.logaUsuario(usuario, senha)
+      if (response.usuario !== null) {
+        setLogged(true)
+      }
+      setIsLoading(false)
+      setIsModalLoginVisible(false)
+    } catch (error) {
+      console.log(error)
+    }
+  }
 
   function gerarIntervaloMensal(mes: number, ano: number) {
     if (mes < 1 || mes > 12) {
@@ -63,6 +93,14 @@ export default function Home() {
 
   const handleCloseModal = () => {
     setIsModalVisible(false);
+  };
+
+  const handleOpenModalLogin = () =>{
+    setIsModalLoginVisible(true);
+  }
+
+  const handleCloseModalLogin = () => {
+    setIsModalLoginVisible(false);
   };
 
   useFocusEffect(
@@ -196,10 +234,52 @@ export default function Home() {
           </Modal>
         </View> 
         :
-        <View style={{flex: 1}}>
-          <Image source={require(imgBaguete)} />
-        </View>
+        <ImageBackground 
+          source={require(imgBaguete)} 
+          resizeMode="cover" 
+          style={{ 
+            width: '100%', 
+            height: '100%', 
+            display: 'flex', 
+            flexDirection: 'row', 
+            justifyContent: 'center', 
+            alignItems: 'flex-end'
+          }}
+        >
+          <TouchableOpacity onPress={handleOpenModalLogin} style={{ marginBottom: 16 }}>
+            <Image source={require(creditos)} />
+          </TouchableOpacity>
+        </ImageBackground>
       }
+
+      <Modal
+        visible={isModalLoginVisible}
+        animationType="slide"
+        transparent={true}
+        onRequestClose={handleCloseModalLogin}
+      >
+        <View style={{ marginTop: 100, padding: 4, borderWidth: 1, borderColor: '#ffffff', marginLeft: 4, marginRight: 4 }}>
+          <View style={{padding: 16}}>
+            <Text style={frmStyles.txtsubmitLogin}>Entre com o Usuário e Senha</Text>
+            <TextInput 
+              style={frmStyles.input}
+              placeholder='Nome de usuário'
+              value={usuario}
+              onChangeText={value => setUsuario(value)}
+            />
+            <TextInput 
+              style={frmStyles.input}
+              placeholder='******'
+              value={senha}
+              secureTextEntry={true}
+              onChangeText={value => setSenha(value)}
+            />
+            <TouchableOpacity onPress={SignToViewTransaction} style={frmStyles.btnsubmitLogin}>
+              {isLoading ? <ActivityIndicator color='#ffffff' /> : <Text style={frmStyles.txtsubmitLogin}>Acessar</Text>}
+            </TouchableOpacity>
+          </View>
+        </View>
+      </Modal>
 
     </View>
   );

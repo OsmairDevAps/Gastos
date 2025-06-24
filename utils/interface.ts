@@ -26,3 +26,13 @@ export interface IItemCompra {
   adquirido: boolean;
   localadquirido: string;
 }
+
+//usuarios
+export interface IUsuario {
+  id: number;
+  nome: string;
+  tipo: string;
+  nomeusuario: string;
+  senha: string;
+  foto: string;
+}

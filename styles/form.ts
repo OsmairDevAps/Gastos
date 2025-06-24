@@ -6,10 +6,23 @@ const frmStyles = StyleSheet.create({
     paddingLeft: 16,
     paddingRight: 16,
   },
+  containerLogin: {
+    flex: 1,
+    padding: 16,
+    flexDirection: 'column',
+    justifyContent: 'center',
+    alignItems: 'center',
+    gap: 8
+  },
   label: {
     fontWeight: '600',
     fontSize: 18,
     marginTop: 10,
+  },
+  grupoInputLogin: {
+    display: 'flex',
+    width: '100%',
+    marginBottom: 4,
   },
   grupoInput: {
     display: 'flex',
@@ -68,7 +81,25 @@ const frmStyles = StyleSheet.create({
     backgroundColor: '#000000',
     alignSelf: 'flex-end', // Alinha ao final se necessário
   },
+  btnsubmitLogin: {
+    width: '100%',
+    height: 60,
+    marginTop: 8,
+    marginBottom: 8,
+    flexDirection: 'row',
+    justifyContent: 'center',
+    alignItems: 'center',
+    padding: 8,
+    borderRadius: 8,
+    backgroundColor: '#707070',
+    alignSelf: 'flex-end', // Alinha ao final se necessário
+  },
   txtsubmit: {
+    color: '#ffffff',
+    fontWeight: '500',
+    fontSize: 20,
+  },
+  txtsubmitLogin: {
     color: '#ffffff',
     fontWeight: '500',
     fontSize: 20,
