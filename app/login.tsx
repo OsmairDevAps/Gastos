@@ -1,7 +1,6 @@
 import React, { useState } from 'react';
 import { View, TextInput, Image, Text, TouchableOpacity } from 'react-native';
 import { useRouter } from 'expo-router';
-import { useAuth } from '../contexts/AuthContext';
 import frmStyles from '@/styles/form';
 
 export default function LoginScreen() {
@@ -9,12 +8,10 @@ export default function LoginScreen() {
   const imgOA = '@/assets/images/logoOA.png'
   const [nomeUsuario, setNomeUsuario] = useState('');
   const [senha, setSenha] = useState('');
-  const { login } = useAuth();
   const router = useRouter();
 
   function handleLogin() {
     if (nomeUsuario) {
-      login(nomeUsuario);
       router.replace('./(tabs)');
     }
   };
