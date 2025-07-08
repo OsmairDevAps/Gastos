@@ -36,3 +36,12 @@ export interface IUsuario {
   senha: string;
   foto: string;
 }
+
+export interface IBatida {
+  id: number;
+  nome_funcionario: string;
+  data_batida: string;
+  latitude: number;
+  longitude: number;
+  hora_batida: string;
+}

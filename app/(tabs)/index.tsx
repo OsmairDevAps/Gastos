@@ -1,4 +1,4 @@
-import { useState, useCallback } from 'react'
+import { useState, useCallback, useEffect } from 'react'
 import { View, 
   Text, 
   TouchableOpacity, 
@@ -10,23 +10,30 @@ import { View,
   ActivityIndicator
 } from 'react-native'
 import { useTransaction } from '@/database/useTransaction'
-import { ITransaction } from '@/utils/interface'
+import { IBatida, ITransaction } from '@/utils/interface'
 import ViewTransaction from '../viewtransaction'
 import styles from '@/styles/home'
 import { useFocusEffect } from '@react-navigation/native'
 import frmStyles from '@/styles/form'
 import { useUsuario } from '@/database/useUsuario'
+import PontoFrequencia from '@/components/pontofrequencia'
+import { supabase } from '@/database/supabase'
 
 export default function Home() {
   const imgBaguete = '@/assets/images/imgbaguete.png'
   const creditos = '@/assets/images/logoOA.png'
+  const relogio = '@/assets/images/relogio.png'
+  const agora = new Date()
+  const dataAtual = agora.toLocaleDateString()
   const [logged, setLogged] = useState(false)
   const transactionDatabase = useTransaction()
   const usuarioDatabase = useUsuario()
   const [isLoading, setIsLoading] = useState(false)
   const [isModalVisible, setIsModalVisible] = useState(false)
   const [isModalLoginVisible, setIsModalLoginVisible] = useState(false)
+  const [isModalPontoVisible, setIsModalPontoVisible] = useState(false)
   const [selectedTransaction, setSelectedTransaction] = useState<ITransaction | null>(null);
+  const [batida, setBatida] = useState<IBatida[]>([])
   const [usuario, setUsuario] = useState('')
   const [senha, setSenha] = useState('')
   const [mes, setMes] = useState('5')
@@ -47,6 +54,24 @@ export default function Home() {
       setIsModalLoginVisible(false)
     } catch (error) {
       console.log(error)
+    }
+  }
+
+  async function VerBatidas(nomefuncionario: string) {
+    try {
+      if (nomefuncionario !== '') {
+        const { data } = await supabase
+          .from('batidas')
+          .select('*')
+          .eq('nome_funcionario', nomefuncionario)
+          .eq('data_batida', dataAtual)
+          .order('hora_batida', {ascending: true})
+        if (data) {
+          setBatida(data)
+        }
+      }
+    } catch (error) {
+      console.log(error)      
     }
   }
 
@@ -99,9 +124,21 @@ export default function Home() {
     setIsModalLoginVisible(true);
   }
 
+  const handleOpenModalPonto = () =>{
+    setIsModalPontoVisible(true);
+  }
+
   const handleCloseModalLogin = () => {
     setIsModalLoginVisible(false);
   };
+
+  const handleCloseModalPonto = () => {
+    setIsModalPontoVisible(false);
+  };
+
+  useEffect(() => {
+    VerBatidas('Osmair')
+  },[])
 
   useFocusEffect(
     useCallback(() => {
@@ -241,14 +278,28 @@ export default function Home() {
             width: '100%', 
             height: '100%', 
             display: 'flex', 
-            flexDirection: 'row', 
-            justifyContent: 'center', 
-            alignItems: 'flex-end'
+            flexDirection: 'column', 
+            justifyContent: 'space-between', 
+            alignItems: 'flex-start',
+            gap: 20
           }}
         >
-          <TouchableOpacity onPress={handleOpenModalLogin} style={{ marginBottom: 16 }}>
-            <Image source={require(creditos)} />
-          </TouchableOpacity>
+            <View style={{ width:'90%', backgroundColor: '#474747d2', borderRadius: 10, padding: 10, marginLeft: 20, marginRight: 20, marginTop: 50 }}>
+              <Text style={{ color: '#cdcdcd', marginBottom: 10 }}>BATIDAS DE PONTO {dataAtual}:</Text>
+              { batida.map(item => (
+                <Text key={item.id} style={{ color: '#cdcdcd' }}>Hora ponto: {item.hora_batida}</Text>
+              ))}
+            </View>
+
+          <View style={{ width: '100%', flexDirection: 'row', justifyContent: 'center', alignItems: 'center', gap: 30 }}>
+            <TouchableOpacity onPress={handleOpenModalLogin} style={{ marginBottom: 16 }}>
+              <Image source={require(creditos)} />
+            </TouchableOpacity>
+
+            <TouchableOpacity onPress={handleOpenModalPonto} style={{ marginBottom: 16 }}>
+              <Image source={require(relogio)} />
+            </TouchableOpacity>
+          </View>
         </ImageBackground>
       }
 
@@ -281,6 +332,15 @@ export default function Home() {
         </View>
       </Modal>
 
+
+      <Modal
+        visible={isModalPontoVisible}
+        animationType="slide"
+        transparent={true}
+        onRequestClose={handleCloseModalPonto}
+      >
+        <PontoFrequencia onClose={setIsModalPontoVisible} listaAtualizar={() => VerBatidas('Osmair')} />
+      </Modal>
     </View>
   );
 }
