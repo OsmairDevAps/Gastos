@@ -18,6 +18,7 @@ import frmStyles from '@/styles/form'
 import { useUsuario } from '@/database/useUsuario'
 import PontoFrequencia from '@/components/pontofrequencia'
 import { supabase } from '@/database/supabase'
+import BaterPonto from '../screens/baterponto'
 
 export default function Home() {
   const imgBaguete = '@/assets/images/imgbaguete.png'
@@ -339,7 +340,8 @@ export default function Home() {
         transparent={true}
         onRequestClose={handleCloseModalPonto}
       >
-        <PontoFrequencia onClose={setIsModalPontoVisible} listaAtualizar={() => VerBatidas('Osmair')} />
+        <BaterPonto />
+        {/* <PontoFrequencia onClose={setIsModalPontoVisible} listaAtualizar={() => VerBatidas('Osmair')} /> */}
       </Modal>
     </View>
   );
