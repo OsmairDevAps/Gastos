@@ -4,7 +4,7 @@ import { useForm, Controller } from 'react-hook-form'
 import { z } from 'zod'
 import MaskInput, { Masks } from 'react-native-mask-input';
 import { DateTimePickerAndroid, DateTimePickerEvent } from '@react-native-community/datetimepicker';
-import styles from '@/styles/receita'
+import styles from '@/styles/lista'
 import frmStyles from '@/styles/form'
 import { useTransaction } from '@/database/useTransaction';
 import { parseDataBrParaDate } from '@/utils/functions';

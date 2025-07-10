@@ -6,7 +6,7 @@ import MaskInput, { Masks } from 'react-native-mask-input';
 import { DateTimePickerAndroid, DateTimePickerEvent } from '@react-native-community/datetimepicker';
 import { useTransaction } from '@/database/useTransaction';
 import { parseDataBrParaDate } from '@/utils/functions';
-import styles from '@/styles/despesa'
+import styles from '@/styles/lista'
 import frmStyles from '@/styles/form'
 
 const despesaSchema = z.object({

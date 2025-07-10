@@ -10,13 +10,12 @@ import { View,
   ActivityIndicator
 } from 'react-native'
 import { useTransaction } from '@/database/useTransaction'
-import { IBatida, ITransaction } from '@/utils/interface'
+import { IBatida, IFuncionario, ITransaction } from '@/utils/interface'
 import ViewTransaction from '../viewtransaction'
 import styles from '@/styles/home'
 import { useFocusEffect } from '@react-navigation/native'
 import frmStyles from '@/styles/form'
 import { useUsuario } from '@/database/useUsuario'
-import PontoFrequencia from '@/components/pontofrequencia'
 import { supabase } from '@/database/supabase'
 import BaterPonto from '../screens/baterponto'
 
@@ -26,9 +25,9 @@ export default function Home() {
   const relogio = '@/assets/images/relogio.png'
   const agora = new Date()
   const dataAtual = agora.toLocaleDateString()
-  const [logged, setLogged] = useState(false)
   const transactionDatabase = useTransaction()
   const usuarioDatabase = useUsuario()
+  const [logged, setLogged] = useState(false)
   const [isLoading, setIsLoading] = useState(false)
   const [isModalVisible, setIsModalVisible] = useState(false)
   const [isModalLoginVisible, setIsModalLoginVisible] = useState(false)
@@ -36,6 +35,7 @@ export default function Home() {
   const [selectedTransaction, setSelectedTransaction] = useState<ITransaction | null>(null);
   const [batida, setBatida] = useState<IBatida[]>([])
   const [usuario, setUsuario] = useState('')
+  const [funcionario, setFuncionario] = useState<IFuncionario>()
   const [senha, setSenha] = useState('')
   const [mes, setMes] = useState('5')
   const [ano, setAno] = useState('2025')
@@ -58,15 +58,15 @@ export default function Home() {
     }
   }
 
-  async function VerBatidas(nomefuncionario: string) {
+  async function VerBatidas(funcionario_id: number) {
     try {
-      if (nomefuncionario !== '') {
+      if (funcionario_id > 0) {
         const { data } = await supabase
-          .from('batidas')
+          .from('pontoeletronico')
           .select('*')
-          .eq('nome_funcionario', nomefuncionario)
-          .eq('data_batida', dataAtual)
-          .order('hora_batida', {ascending: true})
+          .eq('funcionario_id', funcionario_id)
+          .eq('dia', dataAtual)
+          .order('hora', {ascending: true})
         if (data) {
           setBatida(data)
         }
@@ -124,22 +124,22 @@ export default function Home() {
   const handleOpenModalLogin = () =>{
     setIsModalLoginVisible(true);
   }
-
-  const handleOpenModalPonto = () =>{
-    setIsModalPontoVisible(true);
-  }
-
+  
   const handleCloseModalLogin = () => {
     setIsModalLoginVisible(false);
   };
-
+  
+  const handleOpenModalPonto = () =>{
+    setIsModalPontoVisible(true);
+  }
+  
   const handleCloseModalPonto = () => {
     setIsModalPontoVisible(false);
   };
 
   useEffect(() => {
-    VerBatidas('Osmair')
-  },[])
+    VerBatidas(Number(2))
+  },[funcionario])
 
   useFocusEffect(
     useCallback(() => {
@@ -288,7 +288,7 @@ export default function Home() {
             <View style={{ width:'90%', backgroundColor: '#474747d2', borderRadius: 10, padding: 10, marginLeft: 20, marginRight: 20, marginTop: 50 }}>
               <Text style={{ color: '#cdcdcd', marginBottom: 10 }}>BATIDAS DE PONTO {dataAtual}:</Text>
               { batida.map(item => (
-                <Text key={item.id} style={{ color: '#cdcdcd' }}>Hora ponto: {item.hora_batida}</Text>
+                <Text key={item.id} style={{ color: '#cdcdcd' }}>Hora ponto: {item.hora}</Text>
               ))}
             </View>
 
@@ -310,7 +310,7 @@ export default function Home() {
         transparent={true}
         onRequestClose={handleCloseModalLogin}
       >
-        <View style={{ marginTop: 100, padding: 4, borderWidth: 1, borderColor: '#ffffff', marginLeft: 4, marginRight: 4 }}>
+        <View style={{backgroundColor:'#000000', marginTop: 100, padding: 4, borderWidth: 1, borderColor: '#ffffff', marginLeft: 4, marginRight: 4 }}>
           <View style={{padding: 16}}>
             <Text style={frmStyles.txtsubmitLogin}>Entre com o Usuário e Senha</Text>
             <TextInput 
@@ -333,15 +333,13 @@ export default function Home() {
         </View>
       </Modal>
 
-
       <Modal
         visible={isModalPontoVisible}
         animationType="slide"
         transparent={true}
         onRequestClose={handleCloseModalPonto}
       >
-        <BaterPonto />
-        {/* <PontoFrequencia onClose={setIsModalPontoVisible} listaAtualizar={() => VerBatidas('Osmair')} /> */}
+        <BaterPonto onClose={setIsModalPontoVisible} setFuncionario={setFuncionario} />
       </Modal>
     </View>
   );

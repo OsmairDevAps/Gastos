@@ -2,7 +2,6 @@ import { Alert, StyleSheet, Text, TouchableOpacity, View } from "react-native";
 import { AntDesign, FontAwesome6, Feather } from '@expo/vector-icons';
 import { TListaCompraProps } from "@/app/(tabs)/compra";
 import { useState } from "react";
-import { useListaCompras } from "@/database/useListaCompras";
 
 type Props = {
   produto: TListaCompraProps;

@@ -39,9 +39,16 @@ export interface IUsuario {
 
 export interface IBatida {
   id: number;
-  nome_funcionario: string;
-  data_batida: string;
+  funcionario_id: number;
+  dia: string;
+  hora: string;
   latitude: number;
   longitude: number;
-  hora_batida: string;
+}
+
+export interface IFuncionario {
+  id: number;
+  nome: string;
+  pin: string;
+  ativo: boolean;
 }
