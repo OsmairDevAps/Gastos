@@ -1,20 +1,45 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { View, Text, TextInput, Button, Alert, TouchableOpacity } from 'react-native';
 import * as Location from 'expo-location';
 import { supabase } from '@/database/supabase'; 
-import { IFuncionario } from '@/utils/interface';
+import { IBatida, IFuncionario } from '@/utils/interface';
+import { useFuncionario } from '@/database/useFuncionario';
+import { usePonto } from '@/database/usePonto';
 
 type Props = {
   onClose: (isOpen: boolean) => void;
+  funcionario: IFuncionario;
   setFuncionario: (f: IFuncionario) => void;
 }
 
-export default function BaterPonto({ onClose, setFuncionario }: Props) {
-  const [pin, setPin] = useState('');
+export default function BaterPonto({ onClose, funcionario, setFuncionario }: Props) {
+  const agora = new Date()
+  const dataAtual = agora.toLocaleDateString()
+  const funcionarioDatabase = useFuncionario()
+  const [batida, setBatida] = useState<IBatida[]>([])
+  const pontosDatabase = usePonto()
   const [loading, setLoading] = useState(false);
 
   function Close() {
     onClose(false)
+  }
+
+  async function VerBatidas(funcionario_id: number) {
+    try {
+      if (funcionario_id > 0) {
+        const { data } = await supabase
+          .from('pontoeletronico')
+          .select('*')
+          .eq('funcionario_id', funcionario_id)
+          .eq('dia', dataAtual)
+          .order('hora', {ascending: true})
+        if (data) {
+          setBatida(data)
+        }
+      }
+    } catch (error) {
+      console.log(error)      
+    }
   }
 
   const coordenadasEmpresa = {
@@ -44,11 +69,12 @@ export default function BaterPonto({ onClose, setFuncionario }: Props) {
     setLoading(true);
     try {
       // 1. Buscar funcionário pelo PIN
-      const { data: funcionarios, error } = await supabase
-        .from('funcionarios')
-        .select('*')
-        .eq('pin', pin)
-        .single();
+      const { data: funcionarios, error } = await funcionarioDatabase.listarFuncionario(funcionario.pin)
+      // const { data: funcionarios, error } = await supabase
+      //   .from('funcionarios')
+      //   .select('*')
+      //   .eq('pin', pin)
+      //   .single();
 
       if (error || !funcionarios) {
         Alert.alert('Erro', 'PIN inválido');
@@ -79,20 +105,27 @@ export default function BaterPonto({ onClose, setFuncionario }: Props) {
       }
 
       // 3. Registrar ponto
-      const { error: pontoErro } = await supabase.from('pontoeletronico').insert({
+      const dadosPonto = {
         funcionario_id: funcionarios.id,
         dia: new Date().toLocaleDateString(),
         hora: new Date().toLocaleTimeString(),
         latitude: location.coords.latitude,
         longitude: location.coords.longitude,
-      });
+      }
+      const { error: pontoErro } = await pontosDatabase.criar(dadosPonto)
+      // const { error: pontoErro } = await supabase.from('pontoeletronico').insert({
+      //   funcionario_id: funcionarios.id,
+      //   dia: new Date().toLocaleDateString(),
+      //   hora: new Date().toLocaleTimeString(),
+      //   latitude: location.coords.latitude,
+      //   longitude: location.coords.longitude,
+      // });
       
       if (pontoErro) {
         Alert.alert('Erro', 'Erro ao registrar ponto: '+ pontoErro.message);
       } else {
         setFuncionario(funcionarios)
         Alert.alert('Sucesso', `Ponto registrado com sucesso!`);
-        setPin('');
         onClose(false)
       }
     } catch (e) {
@@ -103,29 +136,25 @@ export default function BaterPonto({ onClose, setFuncionario }: Props) {
     }
   };
 
+  useEffect(() => {
+    VerBatidas(funcionario.id)
+  },[funcionario])
+
   return (
     <View style={{ marginTop:200, padding: 10, justifyContent: 'center', backgroundColor:'#eaeaea' }}>
       <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' }}>
-        <Text style={{ marginBottom: 10, fontSize: 20, color: '#4d4d4d', fontWeight: '700'}}>REGISTRO DE PONTO</Text>
+        <Text style={{ marginBottom: 0, fontSize: 20, color: '#4d4d4d', fontWeight: '700'}}>REGISTROS DE PONTO:</Text>
         <TouchableOpacity onPress={Close} style={{ justifyContent: 'center', alignItems: 'center', width: 40, height: 40, padding: 10, backgroundColor: '#ff0000'}}>
           <Text style={{color: '#ffffff', fontSize:18}}>X</Text>
         </TouchableOpacity>
       </View>
-      <Text style={{ fontSize: 20, marginBottom: 10 }}>Digite seu PIN:</Text>
-      <TextInput
-        value={pin}
-        onChangeText={setPin}
-        keyboardType="numeric"
-        secureTextEntry
-        maxLength={6}
-        style={{
-          borderWidth: 1,
-          borderColor: '#ccc',
-          padding: 10,
-          fontSize: 18,
-          marginBottom: 20,
-        }}
-      />
+
+      <View style={{ padding: 10}}>
+      { batida.map(item => (
+        <Text key={item.id} style={{ color: '#343434' }}>Hora ponto: {item.hora}</Text>
+      ))}
+      </View>
+
       <Button 
         title={loading ? 'Registrando...' : 'Bater ponto'} 
         onPress={baterPonto} 

@@ -1,4 +1,5 @@
-import { useState, useCallback, useEffect } from 'react'
+import { useState, useCallback, useEffect, useContext } from 'react'
+import { AuthContext } from '@/context/AuthContext';
 import { View, 
   Text, 
   TouchableOpacity, 
@@ -11,7 +12,7 @@ import { View,
 } from 'react-native'
 import { useTransaction } from '@/database/useTransaction'
 import { IBatida, IFuncionario, ITransaction } from '@/utils/interface'
-import ViewTransaction from '../viewtransaction'
+import ViewTransaction from '../screens/viewtransaction'
 import styles from '@/styles/home'
 import { useFocusEffect } from '@react-navigation/native'
 import frmStyles from '@/styles/form'
@@ -20,6 +21,7 @@ import { supabase } from '@/database/supabase'
 import BaterPonto from '../screens/baterponto'
 
 export default function Home() {
+  const { funcionario, setFuncionario } = useContext(AuthContext)
   const imgBaguete = '@/assets/images/imgbaguete.png'
   const creditos = '@/assets/images/logoOA.png'
   const relogio = '@/assets/images/relogio.png'
@@ -35,7 +37,6 @@ export default function Home() {
   const [selectedTransaction, setSelectedTransaction] = useState<ITransaction | null>(null);
   const [batida, setBatida] = useState<IBatida[]>([])
   const [usuario, setUsuario] = useState('')
-  const [funcionario, setFuncionario] = useState<IFuncionario>()
   const [senha, setSenha] = useState('')
   const [mes, setMes] = useState('5')
   const [ano, setAno] = useState('2025')
@@ -285,12 +286,7 @@ export default function Home() {
             gap: 20
           }}
         >
-            <View style={{ width:'90%', backgroundColor: '#474747d2', borderRadius: 10, padding: 10, marginLeft: 20, marginRight: 20, marginTop: 50 }}>
-              <Text style={{ color: '#cdcdcd', marginBottom: 10 }}>BATIDAS DE PONTO {dataAtual}:</Text>
-              { batida.map(item => (
-                <Text key={item.id} style={{ color: '#cdcdcd' }}>Hora ponto: {item.hora}</Text>
-              ))}
-            </View>
+           <Text style={{ color: '#cdcdcd', margin: 10 }}>Bem-vindo, {funcionario.nome}</Text>
 
           <View style={{ width: '100%', flexDirection: 'row', justifyContent: 'center', alignItems: 'center', gap: 30 }}>
             <TouchableOpacity onPress={handleOpenModalLogin} style={{ marginBottom: 16 }}>
@@ -339,7 +335,7 @@ export default function Home() {
         transparent={true}
         onRequestClose={handleCloseModalPonto}
       >
-        <BaterPonto onClose={setIsModalPontoVisible} setFuncionario={setFuncionario} />
+        <BaterPonto funcionario={funcionario} onClose={setIsModalPontoVisible} setFuncionario={setFuncionario} />
       </Modal>
     </View>
   );

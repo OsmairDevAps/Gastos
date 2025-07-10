@@ -1,8 +1,8 @@
 import { useEffect, useState } from "react"
 import { Alert, Text, TouchableOpacity, View } from "react-native"
-import { ITransaction } from "../utils/interface"
-import { useTransaction } from "../database/useTransaction"
-import viewStyle from "../styles/view"
+import { ITransaction } from "../../utils/interface"
+import { useTransaction } from "../../database/useTransaction"
+import viewStyle from "../../styles/view"
 
 type Props = {
   transaction: ITransaction;

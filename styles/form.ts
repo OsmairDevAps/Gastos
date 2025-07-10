@@ -40,6 +40,18 @@ const frmStyles = StyleSheet.create({
     borderColor: '#cbc9c9',
     backgroundColor: '#eaeaea',
   },
+  inputPassword: {
+    marginTop: 8,
+    marginBottom: 8,
+    fontSize: 20,
+    width: '90%',
+    height: 50,
+    borderRadius: 8,
+    padding: 8,
+    borderWidth: 1,
+    borderColor: '#cbc9c9',
+    backgroundColor: '#eaeaea',
+  },
   inputMedio: {
     marginTop: 8,
     marginBottom: 8,
