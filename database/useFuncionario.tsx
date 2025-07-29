@@ -26,7 +26,7 @@ export function useFuncionario() {
       throw error
     }
   }
-  
+
   async function excluir(id: number) {
     try {
       await supabase.from('funcionarios').delete().eq('id', id)

@@ -14,35 +14,35 @@ export default function TabLayout() {
         name="despesa"
         options={{
           title: 'Despesas',
-          tabBarIcon: ({ color }) => <FontAwesome6 name="sack-dollar" color={color} size={28} />,
+          tabBarIcon: ({ color }: any) => <FontAwesome6 name="sack-dollar" color={color} size={28} />,
         }}
       />
       <Tabs.Screen
         name="receita"
         options={{
           title: 'Receitas',
-          tabBarIcon: ({ color }) => <FontAwesome name="dollar" color={color} size={28} />,
+          tabBarIcon: ({ color }: any) => <FontAwesome name="dollar" color={color} size={28} />,
         }}
       />
       <Tabs.Screen
         name="index"
         options={{
           title: 'Home',
-          tabBarIcon: ({ color }) => <MaterialIcons name="home" color={color} size={28} />,
+          tabBarIcon: ({ color }: any) => <MaterialIcons name="home" color={color} size={28} />,
         }}
       />
       <Tabs.Screen
         name="produto"
         options={{
           title: 'Produto',
-          tabBarIcon: ({ color }) => <FontAwesome5 name="list" color={color} size={28} />,
+          tabBarIcon: ({ color }: any) => <FontAwesome5 name="list" color={color} size={28} />,
         }}
       />
       <Tabs.Screen
         name="compra"
         options={{
           title: 'Compras',
-          tabBarIcon: ({ color }) => <FontAwesome5 name="shopping-cart" color={color} size={28} />,
+          tabBarIcon: ({ color }: any) => <FontAwesome5 name="shopping-cart" color={color} size={28} />,
         }}
       />
     </Tabs>

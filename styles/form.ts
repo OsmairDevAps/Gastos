@@ -68,7 +68,7 @@ const frmStyles = StyleSheet.create({
     marginTop: 8,
     marginBottom: 8,
     fontSize: 20,
-    width: 60,
+    width: 70,
     height: 40,
     borderRadius: 8,
     padding: 8,

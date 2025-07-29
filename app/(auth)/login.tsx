@@ -11,32 +11,32 @@ export default function LoginScreen() {
   const imgOA = '@/assets/images/logoOA.png'
   const router = useRouter();
   const funcionarioDatabase = useFuncionario()
-  const { setFuncionario } = useContext(AuthContext);
+  const { funcionario, setFuncionario } = useContext(AuthContext);
   const [isUnVisiblePin, setIsUnVisiblePin] = useState(true)
   const [nomeFuncionario, setNomeFuncionario] = useState('');
   const [pinFuncionario, setPinFuncionario] = useState('');
 
   async function handleLogin() {
+    const nomefun = nomeFuncionario
     try {
-      const { data, error } = await funcionarioDatabase.logar(nomeFuncionario, pinFuncionario)
+      const { data, error } = await funcionarioDatabase.logar(nomefun.toUpperCase(), pinFuncionario)
       if (data) {
         setFuncionario(data[0])
         router.replace('/(tabs)');
       }
+
       if (error) {
-        Alert.alert('Ocorreu um erro ao logar: '+ error)
+        Alert.alert('Ocorreu um erro ao logar: ' + error)
       }
     } catch (error) {
-      Alert.alert('Ocorreu um erro ao logar: '+ error)
+      Alert.alert('Ocorreu um erro ao logar: ' + error)
     }
-    // const userFake = { id: 1, nome: 'João', pin:'1234', ativo: true };
-    // setFuncionario(userFake);
   }
 
   return (
     <View style={frmStyles.containerLogin}>
       <Image source={require(imgTC)} width={32} />
-      
+
       <View style={frmStyles.grupoInputLogin}>
         <Text style={frmStyles.label}>Nome do Funcionário:</Text>
         <TextInput
@@ -48,7 +48,7 @@ export default function LoginScreen() {
       </View>
       <View style={frmStyles.grupoInputLogin}>
         <Text style={frmStyles.label}>Pin:</Text>
-        <View style={{ flexDirection: 'row', justifyContent: 'flex-start', alignItems: 'center', gap: 8}}>
+        <View style={{ flexDirection: 'row', justifyContent: 'flex-start', alignItems: 'center', gap: 8 }}>
           <TextInput
             placeholder="****"
             keyboardType='numeric'
@@ -63,8 +63,8 @@ export default function LoginScreen() {
         </View>
       </View>
 
-      <TouchableOpacity 
-        onPress={handleLogin} 
+      <TouchableOpacity
+        onPress={handleLogin}
         style={frmStyles.btnsubmitLogin}
       >
         <Text style={frmStyles.txtsubmitLogin}>Entrar</Text>

@@ -1,12 +1,13 @@
 import { useState, useCallback, useEffect, useContext } from 'react'
 import { AuthContext } from '@/context/AuthContext';
-import { View, 
-  Text, 
-  TouchableOpacity, 
-  FlatList, 
-  Modal, 
-  TextInput, 
-  ImageBackground, 
+import {
+  View,
+  Text,
+  TouchableOpacity,
+  FlatList,
+  Modal,
+  TextInput,
+  ImageBackground,
   Image,
   ActivityIndicator
 } from 'react-native'
@@ -29,7 +30,7 @@ export default function Home() {
   const dataAtual = agora.toLocaleDateString()
   const transactionDatabase = useTransaction()
   const usuarioDatabase = useUsuario()
-  const [logged, setLogged] = useState(false)
+  const [viewTransaction, setViewTransaction] = useState(false)
   const [isLoading, setIsLoading] = useState(false)
   const [isModalVisible, setIsModalVisible] = useState(false)
   const [isModalLoginVisible, setIsModalLoginVisible] = useState(false)
@@ -45,20 +46,6 @@ export default function Home() {
   const [despesas, setDespesas] = useState<ITransaction[]>([])
   const [receitas, setReceitas] = useState<ITransaction[]>([])
 
-  async function SignToViewTransaction() {
-    try {
-      setIsLoading(true)
-      const response = await usuarioDatabase.logaUsuario(usuario, senha)
-      if (response.usuario !== null) {
-        setLogged(true)
-      }
-      setIsLoading(false)
-      setIsModalLoginVisible(false)
-    } catch (error) {
-      console.log(error)
-    }
-  }
-
   async function VerBatidas(funcionario_id: number) {
     try {
       if (funcionario_id > 0) {
@@ -67,13 +54,13 @@ export default function Home() {
           .select('*')
           .eq('funcionario_id', funcionario_id)
           .eq('dia', dataAtual)
-          .order('hora', {ascending: true})
+          .order('hora', { ascending: true })
         if (data) {
           setBatida(data)
         }
       }
     } catch (error) {
-      console.log(error)      
+      console.log(error)
     }
   }
 
@@ -122,28 +109,31 @@ export default function Home() {
     setIsModalVisible(false);
   };
 
-  const handleOpenModalLogin = () =>{
+  const handleOpenModalLogin = () => {
     setIsModalLoginVisible(true);
   }
-  
+
   const handleCloseModalLogin = () => {
     setIsModalLoginVisible(false);
   };
-  
-  const handleOpenModalPonto = () =>{
+
+  const handleOpenModalPonto = () => {
     setIsModalPontoVisible(true);
   }
-  
+
   const handleCloseModalPonto = () => {
     setIsModalPontoVisible(false);
   };
 
   useEffect(() => {
-    VerBatidas(Number(2))
-  },[funcionario])
+    VerBatidas(Number(funcionario?.id))
+  }, [funcionario])
 
   useFocusEffect(
     useCallback(() => {
+      if (funcionario?.nome === 'WANESSA' || funcionario?.nome === 'OSMAIR') {
+        setViewTransaction(true)
+      }
       loadTransaction('D')
       loadTransaction('R')
     }, [])
@@ -151,8 +141,8 @@ export default function Home() {
 
   return (
     <View style={styles.container}>
-      {logged ?
-        <View style={{ padding: 16}}>
+      {viewTransaction ?
+        <View style={{ padding: 16 }}>
           <View style={styles.titleHome}>
             <Text style={styles.titulo}>LANÇAMENTOS</Text>
             <View style={styles.grupoFilter}>
@@ -271,22 +261,22 @@ export default function Home() {
               )}
             </View>
           </Modal>
-        </View> 
+        </View>
         :
-        <ImageBackground 
-          source={require(imgBaguete)} 
-          resizeMode="cover" 
-          style={{ 
-            width: '100%', 
-            height: '100%', 
-            display: 'flex', 
-            flexDirection: 'column', 
-            justifyContent: 'space-between', 
+        <ImageBackground
+          source={require(imgBaguete)}
+          resizeMode="cover"
+          style={{
+            width: '100%',
+            height: '100%',
+            display: 'flex',
+            flexDirection: 'column',
+            justifyContent: 'space-between',
             alignItems: 'flex-start',
             gap: 20
           }}
         >
-           <Text style={{ color: '#cdcdcd', margin: 10 }}>Bem-vindo, {funcionario.nome}</Text>
+          <Text style={{ color: '#cdcdcd', margin: 10 }}>Bem-vindo, {funcionario?.nome}</Text>
 
           <View style={{ width: '100%', flexDirection: 'row', justifyContent: 'center', alignItems: 'center', gap: 30 }}>
             <TouchableOpacity onPress={handleOpenModalLogin} style={{ marginBottom: 16 }}>
@@ -299,35 +289,6 @@ export default function Home() {
           </View>
         </ImageBackground>
       }
-
-      <Modal
-        visible={isModalLoginVisible}
-        animationType="slide"
-        transparent={true}
-        onRequestClose={handleCloseModalLogin}
-      >
-        <View style={{backgroundColor:'#000000', marginTop: 100, padding: 4, borderWidth: 1, borderColor: '#ffffff', marginLeft: 4, marginRight: 4 }}>
-          <View style={{padding: 16}}>
-            <Text style={frmStyles.txtsubmitLogin}>Entre com o Usuário e Senha</Text>
-            <TextInput 
-              style={frmStyles.input}
-              placeholder='Nome de usuário'
-              value={usuario}
-              onChangeText={value => setUsuario(value)}
-            />
-            <TextInput 
-              style={frmStyles.input}
-              placeholder='******'
-              value={senha}
-              secureTextEntry={true}
-              onChangeText={value => setSenha(value)}
-            />
-            <TouchableOpacity onPress={SignToViewTransaction} style={frmStyles.btnsubmitLogin}>
-              {isLoading ? <ActivityIndicator color='#ffffff' /> : <Text style={frmStyles.txtsubmitLogin}>Acessar</Text>}
-            </TouchableOpacity>
-          </View>
-        </View>
-      </Modal>
 
       <Modal
         visible={isModalPontoVisible}
