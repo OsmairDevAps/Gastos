@@ -39,7 +39,8 @@ export default function Home() {
   const [batida, setBatida] = useState<IBatida[]>([])
   const [usuario, setUsuario] = useState('')
   const [senha, setSenha] = useState('')
-  const [mes, setMes] = useState('5')
+  const dt = new Date().getMonth()
+  const [mes, setMes] = useState(String(dt + 1))
   const [ano, setAno] = useState('2025')
   const [totalDesp, setTotalDesp] = useState(0)
   const [totalRec, setTotalRec] = useState(0)
@@ -279,12 +280,13 @@ export default function Home() {
           <Text style={{ color: '#cdcdcd', margin: 10 }}>Bem-vindo, {funcionario?.nome}</Text>
 
           <View style={{ width: '100%', flexDirection: 'row', justifyContent: 'center', alignItems: 'center', gap: 30 }}>
-            <TouchableOpacity onPress={handleOpenModalLogin} style={{ marginBottom: 16 }}>
+            {/* <TouchableOpacity onPress={handleOpenModalLogin} style={{ marginBottom: 16 }}>
               <Image source={require(creditos)} />
-            </TouchableOpacity>
+            </TouchableOpacity> */}
 
-            <TouchableOpacity onPress={handleOpenModalPonto} style={{ marginBottom: 16 }}>
+            <TouchableOpacity onPress={handleOpenModalPonto} style={{ width: 100, marginBottom: 16, alignItems: 'center' }}>
               <Image source={require(relogio)} />
+              <Text>Bater ponto</Text>
             </TouchableOpacity>
           </View>
         </ImageBackground>

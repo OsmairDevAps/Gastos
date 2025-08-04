@@ -17,7 +17,7 @@ export default function LoginScreen() {
   const [pinFuncionario, setPinFuncionario] = useState('');
 
   async function handleLogin() {
-    const nomefun = nomeFuncionario
+    const nomefun = nomeFuncionario.trim()
     try {
       const { data, error } = await funcionarioDatabase.logar(nomefun.toUpperCase(), pinFuncionario)
       if (data) {

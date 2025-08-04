@@ -43,14 +43,8 @@ export default function BaterPonto({ onClose, funcionario, setFuncionario }: Pro
   }
 
   const coordenadasEmpresa = {
-    // latitude: -16.312633049008056,
-    // longitude: -48.950016490472095,
-
-    // latitude: -16.331311814383426, CDL
-    // longitude: -48.955823032800325, CDL
-
-    latitude: -16.39459296189789, //CASA
-    longitude: -48.98287900448507, //CASA
+    latitude: -16.312643345936934,
+    longitude: -48.94996284681533,
     raioPermitidoMetros: 100, // ajuste para seu local
   };
 

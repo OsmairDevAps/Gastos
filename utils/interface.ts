@@ -49,6 +49,7 @@ export interface IBatida {
 export interface IFuncionario {
   id: number;
   nome: string;
+  data_nascimento: string;
   pin: string;
   ativo: boolean;
 }
