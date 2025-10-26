@@ -3,18 +3,19 @@ import { Text, TouchableOpacity, View, Modal } from "react-native";
 import { Feather } from '@expo/vector-icons'
 import { useState } from "react";
 import Funcionario from "./funcionarios";
+import ListaBatidas from "./listabatidas";
 
 export default function Menu() {
   const router = useRouter()
-  const [isModalCardapioVisible, setIsModalCardapioVisible] = useState(false)
+  const [isModalBatidaVisible, setIsModalBatidaVisible] = useState(false)
   const [isModalFuncionarioVisible, setIsModalFuncionarioVisible] = useState(false)
 
-  function handleOpenModalCardapio() {
-    setIsModalCardapioVisible(true)
+  function handleOpenModalBatida() {
+    setIsModalBatidaVisible(true)
   }
 
-  function handleCloseModalCardapio() {
-    setIsModalCardapioVisible(false)
+  function handleCloseModalBatida() {
+    setIsModalBatidaVisible(false)
   }
 
   function handleOpenModalFuncionario() {
@@ -41,26 +42,28 @@ export default function Menu() {
 
       <View style={{ flexDirection: 'row', gap: 16 }}>
         <TouchableOpacity
-          onPress={handleOpenModalCardapio}
-          style={{ paddingHorizontal: 16, paddingVertical: 12, backgroundColor: '#c4c4c4ff', borderRadius: 8 }}
-        >
-          <Text>Cardápio</Text>
-        </TouchableOpacity>
-
-        <TouchableOpacity
           onPress={handleOpenModalFuncionario}
           style={{ paddingHorizontal: 16, paddingVertical: 12, backgroundColor: '#c4c4c4ff', borderRadius: 8 }}
         >
           <Text>Funcionários</Text>
         </TouchableOpacity>
+
+        <TouchableOpacity
+          onPress={handleOpenModalBatida}
+          style={{ paddingHorizontal: 16, paddingVertical: 12, backgroundColor: '#c4c4c4ff', borderRadius: 8 }}
+        >
+          <Text>Batidas de ponto</Text>
+        </TouchableOpacity>
+
       </View>
 
       <Modal
-        visible={isModalCardapioVisible}
+        visible={isModalBatidaVisible}
         animationType="slide"
         transparent={true}
-        onRequestClose={handleCloseModalCardapio}
+        onRequestClose={handleCloseModalBatida}
       >
+        <ListaBatidas closeModal={setIsModalBatidaVisible} />
       </Modal>
 
       <Modal

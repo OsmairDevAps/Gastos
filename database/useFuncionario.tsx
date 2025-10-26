@@ -53,6 +53,20 @@ export function useFuncionario() {
       const { data } = await supabase
         .from('funcionarios')
         .select('*')
+        .order('nome', { ascending: true })
+      return data
+    } catch (error) {
+      throw error
+    }
+  }
+
+  async function verFuncionario(id: number) {
+    try {
+      const { data } = await supabase
+        .from('funcionarios')
+        .select('*')
+        .eq('id', id)
+        .single()
       return data
     } catch (error) {
       throw error
@@ -72,5 +86,5 @@ export function useFuncionario() {
     }
   }
 
-  return { criar, alterar, excluir, logar, listar, listarFuncionario }
+  return { criar, alterar, excluir, logar, listar, verFuncionario, listarFuncionario }
 }

@@ -28,7 +28,7 @@ export default function Despesa() {
       valor: ''
     }
   });
-  
+
   const onChange = (event: DateTimePickerEvent, selectedDate?: Date) => {
     if (event.type === 'set' && selectedDate) {
       const currentDate = selectedDate;
@@ -79,69 +79,69 @@ export default function Despesa() {
   }
 
   return (
-      <View style={styles.container}>
-        <View style={styles.navbar}>
-          <Text style={styles.titulo}>LANÇAMENTO DE DESPESAS</Text>
-        </View>
-        
-        <View style={frmStyles.container}>
-          <View style={frmStyles.grupoInput}>
-            <Text style={frmStyles.label}>Data da compra:</Text>
-            <TouchableOpacity 
-              onPress={showDatepicker} 
-              style={frmStyles.input}
-            >
-              <Text style={frmStyles.txtButton}>{date.toLocaleString()}</Text>
-            </TouchableOpacity>
-          </View>
+    <View style={styles.container}>
+      <View style={styles.navbar}>
+        <Text style={styles.titulo}>LANÇAMENTO DE DESPESAS</Text>
+      </View>
 
-          <View style={frmStyles.grupoInput}>
-            <Text style={frmStyles.label}>Valor:</Text>
-            <Controller
-              control={control}
-              name="valor"
-              render={({ field: { onChange, value } }) => (
-                <MaskInput
-                  value={value}
-                  onChangeText={onChange}
-                  mask={Masks.BRL_CURRENCY}
-                  keyboardType="numeric"
-                  style={frmStyles.input}
-                />
-              )}
-            />
-            {errors.valor && <Text style={frmStyles.txterror}>O valor é obrigatório</Text>}
-          </View>
-
-          <View style={frmStyles.grupoInput}>
-            <Text style={frmStyles.label}>Descrição do que comprou (opcional):</Text>
-            <TextInput 
-              style={frmStyles.input}
-              value={descricao}
-              onChangeText={(text)=>setDescricao(text)}
-            />
-          </View>
-
-          <View style={frmStyles.grupoInput}>
-            <Text style={frmStyles.label}>Quantidade (opcional):</Text>
-            <TextInput 
-              style={frmStyles.input}
-              value={quant}
-              onChangeText={(text)=>setQuant(text)}
-            />
-          </View>
-
-          <TouchableOpacity 
-            style={[frmStyles.btnsubmit, isSubmitting && { opacity: 0.6 }]}
-            onPress={handleSubmit(onSubmit)}
+      <View style={frmStyles.container}>
+        <View style={frmStyles.grupoInput}>
+          <Text style={frmStyles.label}>Data da compra:</Text>
+          <TouchableOpacity
+            onPress={showDatepicker}
+            style={frmStyles.input}
           >
-            {isSubmitting ? (
-              <ActivityIndicator color="#fff" />
-            ) : (
-              <Text style={frmStyles.txtsubmit}>Salvar</Text>
-            )}
+            <Text style={frmStyles.txtButton}>{date.toLocaleString()}</Text>
           </TouchableOpacity>
         </View>
+
+        <View style={frmStyles.grupoInput}>
+          <Text style={frmStyles.label}>Valor:</Text>
+          <Controller
+            control={control}
+            name="valor"
+            render={({ field: { onChange, value } }) => (
+              <MaskInput
+                value={value}
+                onChangeText={onChange}
+                mask={Masks.BRL_CURRENCY}
+                keyboardType="numeric"
+                style={frmStyles.input}
+              />
+            )}
+          />
+          {errors.valor && <Text style={frmStyles.txterror}>O valor é obrigatório</Text>}
+        </View>
+
+        <View style={frmStyles.grupoInput}>
+          <Text style={frmStyles.label}>Descrição do que comprou (opcional):</Text>
+          <TextInput
+            style={frmStyles.input}
+            value={descricao}
+            onChangeText={(text) => setDescricao(text)}
+          />
+        </View>
+
+        <View style={frmStyles.grupoInput}>
+          <Text style={frmStyles.label}>Quantidade (opcional):</Text>
+          <TextInput
+            style={frmStyles.input}
+            value={quant}
+            onChangeText={(text) => setQuant(text)}
+          />
+        </View>
+
+        <TouchableOpacity
+          style={[frmStyles.btnsubmit, isSubmitting && { opacity: 0.6 }]}
+          onPress={handleSubmit(onSubmit)}
+        >
+          {isSubmitting ? (
+            <ActivityIndicator color="#fff" />
+          ) : (
+            <Text style={frmStyles.txtsubmit}>Salvar</Text>
+          )}
+        </TouchableOpacity>
       </View>
+    </View>
   )
 }
