@@ -280,10 +280,6 @@ export default function Home() {
           <Text style={{ color: '#cdcdcd', margin: 10 }}>Bem-vindo, {funcionario?.nome}</Text>
 
           <View style={{ width: '100%', flexDirection: 'row', justifyContent: 'center', alignItems: 'center', gap: 30 }}>
-            {/* <TouchableOpacity onPress={handleOpenModalLogin} style={{ marginBottom: 16 }}>
-              <Image source={require(creditos)} />
-            </TouchableOpacity> */}
-
             <TouchableOpacity onPress={handleOpenModalPonto} style={{ width: 100, marginBottom: 16, alignItems: 'center' }}>
               <Image source={require(relogio)} />
               <Text>Bater ponto</Text>

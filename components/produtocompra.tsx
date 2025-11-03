@@ -8,16 +8,16 @@ type Props = {
   produtosSelecionados: IProdutoCompra[]; // ou string[] se for só IDs
 }
 
-export default function ProdutoCompra({produto, adicionarProduto, produtosSelecionados}: Props) {
+export default function ProdutoCompra({ produto, adicionarProduto, produtosSelecionados }: Props) {
   const estaSelecionado = produtosSelecionados.some(p => p.id === produto.id);
   function handleChange(prod: IProdutoCompra) {
     adicionarProduto(prod)
   }
 
   return (
-    <TouchableOpacity style={styles.container} onPress={()=>handleChange(produto)}>
-      {estaSelecionado ? 
-        <AntDesign size={28} name="checksquare" /> :
+    <TouchableOpacity style={styles.container} onPress={() => handleChange(produto)}>
+      {estaSelecionado ?
+        <AntDesign size={28} name="check-square" /> :
         <FontAwesome6 size={24} name="square-full" />
       }
       <Text style={styles.titulo}>{produto.item}</Text>

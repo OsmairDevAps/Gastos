@@ -1,5 +1,5 @@
-import { useEffect, useState } from "react";
-import { Alert, Text, View, SectionList, TouchableOpacity, Modal } from "react-native";
+import { useEffect, useState, useRef } from "react";
+import { Alert, Text, View, SectionList, TouchableOpacity, Modal, TextInput } from "react-native";
 import { DateTimePickerAndroid, DateTimePickerEvent } from '@react-native-community/datetimepicker';
 import frmStyles from "@/styles/form";
 import ButtonTitle from "@/components/buttontitle";
@@ -14,6 +14,8 @@ import AdicionaProduto from "@/components/adicionaProduto";
 type DateTimePickerMode = 'date' | 'time';
 
 export default function Produto() {
+  const inputRef = useRef(null)
+  const [pesquisaProduto, setPesquisaProduto] = useState('')
   const itemCompraDatabase = useListaCompras()
   const produtosDatabase = useProdutosCompras()
   const [date, setDate] = useState(new Date());
@@ -72,9 +74,9 @@ export default function Produto() {
     setIsOpenModal(true)
   }
 
-  async function ListaProdutos() {
+  async function ListaProdutos(produto?: string) {
     try {
-      const response = await produtosDatabase.listarProdutos()
+      const response = await produtosDatabase.listarProdutos(produto)
       if (response) {
         setProdutosCompra(response)
       }
@@ -84,9 +86,9 @@ export default function Produto() {
   }
 
   async function handleSave() {
-    produtos.map(async(item) => {
-      const response = await itemCompraDatabase.verificarItemCadastrado(date.toLocaleDateString('pt-BR'),item.id)
-      if(response?.length === 0) {
+    produtos.map(async (item) => {
+      const response = await itemCompraDatabase.verificarItemCadastrado(date.toLocaleDateString('pt-BR'), item.id)
+      if (response?.length === 0) {
         await itemCompraDatabase.criar({
           categoria: item.categoria,
           idproduto: item.id,
@@ -101,9 +103,9 @@ export default function Produto() {
     Alert.alert('Incluídos com sucesso!')
   }
 
-  useEffect(()=> {
-    ListaProdutos()
-  }, [])
+  useEffect(() => {
+    ListaProdutos(pesquisaProduto)
+  }, [pesquisaProduto])
 
   return (
     <View style={styles.container}>
@@ -116,12 +118,22 @@ export default function Produto() {
         <View style={frmStyles.grupoInput}>
           <Text style={frmStyles.label}>DIA:</Text>
           <Text style={frmStyles.label}>Data da compra:</Text>
-            <TouchableOpacity 
-              onPress={showDatepicker} 
-              style={frmStyles.input}
-            >
-              <Text style={frmStyles.txtButton}>{date.toLocaleString()}</Text>
-            </TouchableOpacity>
+          <TouchableOpacity
+            onPress={showDatepicker}
+            style={frmStyles.input}
+          >
+            <Text style={frmStyles.txtButton}>{date.toLocaleString()}</Text>
+          </TouchableOpacity>
+        </View>
+
+        <View>
+          <Text style={frmStyles.label}>Pesquisar:</Text>
+          <TextInput
+            ref={inputRef}
+            style={frmStyles.input}
+            placeholder="Produto"
+            onChangeText={(text) => setPesquisaProduto(text.toUpperCase())}
+          />
         </View>
 
         <View style={{ flex: 1 }}>
@@ -130,9 +142,9 @@ export default function Produto() {
             keyExtractor={(item) => String(item.id)}
             renderItem={({ item }) => (
               <View style={frmStyles.grupoInput}>
-                <Item 
-                  produto={item} 
-                  adicionarProduto={adicionarProduto} 
+                <Item
+                  produto={item}
+                  adicionarProduto={adicionarProduto}
                   produtosSelecionados={produtos}
                 />
               </View>
@@ -151,8 +163,8 @@ export default function Produto() {
         animationType='slide'
         visible={isOpenModal}
         onRequestClose={() => {
-           setIsOpenModal(!isOpenModal)
-      }}>
+          setIsOpenModal(!isOpenModal)
+        }}>
         <AdicionaProduto setIsModalOpen={setIsOpenModal} listaAtualizar={ListaProdutos} />
       </Modal>
     </View>

@@ -5,10 +5,10 @@ import { useState } from "react";
 
 type Props = {
   produto: TListaCompraProps;
-  onDelete: (id: number)=>void;
+  onDelete: (id: number) => void;
 }
 
-export default function ItemListaCompra({produto, onDelete}: Props) {
+export default function ItemListaCompra({ produto, onDelete }: Props) {
   const [estaSelecionado, setEstaSelecionado] = useState(false)
 
   function handleSelect() {
@@ -18,8 +18,8 @@ export default function ItemListaCompra({produto, onDelete}: Props) {
   return (
     <View style={styles.container}>
       <TouchableOpacity style={styles.itemList} onPress={handleSelect}>
-        {estaSelecionado ? 
-          <AntDesign size={28} name="checksquare" /> :
+        {estaSelecionado ?
+          <AntDesign size={28} name="check-square" /> :
           <FontAwesome6 size={24} name="square-full" />
         }
         <Text style={styles.titulo}>{produto.item}</Text>
@@ -49,7 +49,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'flex-start',
     alignItems: 'center',
-    padding: 4,
+    padding: 2,
     borderRadius: 8,
     gap: 10
   },

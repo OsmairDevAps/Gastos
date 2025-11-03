@@ -40,7 +40,6 @@ export interface IUsuario {
 export interface IBatida {
   id: number;
   funcionario_id: number;
-  nome: string;
   dia: string;
   hora: string;
   latitude: number;

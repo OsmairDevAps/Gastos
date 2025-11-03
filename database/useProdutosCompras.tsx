@@ -24,18 +24,28 @@ export function useProdutosCompras() {
     }
   }
 
-  async function listarProdutos() {
+  async function listarProdutos(nome?: string) {
     try {
-      const { data } = await supabase
+      let query = supabase
         .from('produtoscompras')
         .select('*')
-        .order('categoria', {ascending: true})
-        .order('item', {ascending: true})
-      return data
+        .order('categoria', { ascending: true })
+        .order('item', { ascending: true });
+
+      if (nome && nome.trim() !== '') {
+        query = query.like('item', `%${nome}%`); // usa curingas
+      }
+
+      const { data, error } = await query;
+
+      if (error) throw error;
+
+      return data;
     } catch (error) {
-      throw error
+      console.error('Erro ao listar produtos:', error);
+      throw error;
     }
   }
 
-return { criar, listarCategorias, listarProdutos }
+  return { criar, listarCategorias, listarProdutos }
 }

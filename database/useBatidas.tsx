@@ -50,6 +50,24 @@ export function useBatida() {
     }
   }
 
+  async function listarBatidasPorPeriodo(diaIni: string, diaFim: string) {
+    const { data, error } = await supabase
+      .rpc('fn_batidas_periodo', {
+        data_inicio: diaIni,
+        data_fim: diaFim
+      })
+    return { data, error }
+  }
+
+  async function listarQuantidadeBatidasPorPeriodo(diaIni: string, diaFim: string) {
+    const { data, error } = await supabase
+      .rpc('fn_contagem_dias_distintos', {
+        data_inicio: diaIni,
+        data_fim: diaFim
+      })
+    return { data, error }
+  }
+
   async function listarBatidasPorFuncionario(id_funcionario: number) {
     try {
       const { data, error } = await supabase
@@ -87,5 +105,15 @@ export function useBatida() {
     }
   }
 
-  return { criar, alterar, excluir, listar, listarBatidasPorFuncionario, listarBatridasPorDia, listarBatridasPorDiaFuncionario }
+  return {
+    criar,
+    alterar,
+    excluir,
+    listar,
+    listarBatidasPorPeriodo,
+    listarQuantidadeBatidasPorPeriodo,
+    listarBatidasPorFuncionario,
+    listarBatridasPorDia,
+    listarBatridasPorDiaFuncionario
+  }
 }

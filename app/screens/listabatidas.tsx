@@ -1,6 +1,6 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, useRef } from "react";
 import { IBatida, IFuncionario } from "@/utils/interface";
-import { FlatList, Text, TouchableOpacity, View } from "react-native";
+import { Button, FlatList, Text, TextInput, TouchableOpacity, View } from "react-native";
 import { DateTimePickerAndroid, DateTimePickerEvent } from '@react-native-community/datetimepicker';
 import { useFuncionario } from "@/database/useFuncionario";
 import { useBatida } from "@/database/useBatidas";
@@ -10,11 +10,41 @@ type Props = {
 }
 type DateTimePickerMode = 'date' | 'time';
 
+type TBatidas = {
+  id: number;
+  funcionario_id?: number;
+  nome: string;
+  dia: string;
+  hora?: string;
+  latitude?: number;
+  longitude?: number;
+}
+
+type TQuantBatidas = {
+  nome: string;
+  funcionario_id: number;
+  dias_com_batidas: number;
+}
+
 export default function ListaBatidas({ closeModal }: Props) {
+  const [dIni, setDIni] = useState('')
+  const [mIni, setMIni] = useState('')
+  const [aIni, setAIni] = useState('')
+  const [dFim, setDFim] = useState('')
+  const [mFim, setMFim] = useState('')
+  const [aFim, setAFim] = useState('')
+  // Refs para controlar o foco
+  const mIniRef = useRef<TextInput>(null);
+  const aIniRef = useRef<TextInput>(null);
+  const dFimRef = useRef<TextInput>(null);
+  const mFimRef = useRef<TextInput>(null);
+  const aFimRef = useRef<TextInput>(null);
+
   const funcionarioDatabase = useFuncionario()
   const batidasDatabase = useBatida()
   const [funcionarios, setFuncionarios] = useState<IFuncionario[]>([])
-  const [batidas, setBatidas] = useState<IBatida[]>([])
+  const [batidas, setBatidas] = useState<TBatidas[]>([])
+  const [quantBatidas, setQuantBatidas] = useState<TQuantBatidas[]>([])
   const [diaPonto, setDiaPonto] = useState(new Date());
   const [idFuncionario, setIdFuncionario] = useState(0);
   const [isListaFuncionarioAberta, setIsListaFuncionarioAberta] = useState(false)
@@ -66,13 +96,26 @@ export default function ListaBatidas({ closeModal }: Props) {
     }
   }
 
-  async function loadBatidasFiltro(dia: string, id_funcionario: number) {
-    // const dia = diaPonto.toLocaleDateString()
-    const { data, error } = await batidasDatabase.listarBatridasPorDiaFuncionario(dia, id_funcionario)
+  async function filtrarBatidas() {
+    const diaInicial = dIni + '/' + mIni + '/' + aIni
+    const diaFinal = dFim + '/' + mFim + '/' + aFim
+    const { data, error } = await batidasDatabase.listarBatidasPorPeriodo(diaInicial, diaFinal)
     if (data) {
       setBatidas(data)
     }
+    const { data: quantidade } = await batidasDatabase.listarQuantidadeBatidasPorPeriodo(diaInicial, diaFinal)
+    console.log(quantidade)
   }
+
+  async function filtrarQuantBatidas() {
+    const diaInicial = dIni + '/' + mIni + '/' + aIni
+    const diaFinal = dFim + '/' + mFim + '/' + aFim
+    const { data, error } = await batidasDatabase.listarQuantidadeBatidasPorPeriodo(diaInicial, diaFinal)
+    if (data) {
+      setQuantBatidas(data)
+    }
+  }
+
   useEffect(() => {
     loadFuncionarios()
     loadBatidas()
@@ -88,7 +131,13 @@ export default function ListaBatidas({ closeModal }: Props) {
       borderColor: '#000000',
     }}
     >
-      <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', height: 50 }}>
+      <View style={{
+        flexDirection: 'row',
+        justifyContent: 'space-between',
+        alignItems: 'center',
+        borderBottomColor: '#a1a1a1',
+        borderBottomWidth: 1
+      }}>
         <Text style={{ fontWeight: 'bold' }}>BATIDAS DE PONTO:</Text>
         <TouchableOpacity
           onPress={Close}
@@ -98,6 +147,116 @@ export default function ListaBatidas({ closeModal }: Props) {
         </TouchableOpacity>
       </View>
 
+      <View style={{ marginBottom: 20 }}>
+        <Text style={{ fontWeight: 'bold', margin: 10 }}>Periodo:</Text>
+        <View style={{ display: 'flex', flexDirection: 'row', justifyContent: 'flex-start', alignItems: 'center', marginBottom: 10 }}>
+          <TextInput
+            placeholder="dd"
+            keyboardType="numeric"
+            maxLength={2}
+            style={{ width: 40, textAlign: 'center', borderWidth: 1, borderColor: '#a1a1a1', borderRadius: 8 }}
+            value={dIni}
+            onChangeText={(txt) => {
+              setDIni(txt);
+              if (txt.length === 2) mIniRef.current?.focus();
+            }}
+          />
+          <Text style={{ marginHorizontal: 4 }}>/</Text>
+          <TextInput
+            ref={mIniRef}
+            placeholder="mm"
+            keyboardType="numeric"
+            maxLength={2}
+            style={{ width: 44, textAlign: 'center', borderWidth: 1, borderColor: '#a1a1a1', borderRadius: 8 }}
+            value={mIni}
+            onChangeText={(text) => {
+              setMIni(text);
+              if (text.length === 2) aIniRef.current?.focus();
+            }}
+          />
+          <Text style={{ marginHorizontal: 4 }}>/</Text>
+          <TextInput
+            ref={aIniRef}
+            placeholder="aaaa"
+            keyboardType="numeric"
+            maxLength={4}
+            style={{ width: 62, textAlign: 'center', borderWidth: 1, borderColor: '#a1a1a1', borderRadius: 8 }}
+            value={aIni}
+            onChangeText={(text) => {
+              setAIni(text);
+              if (text.length === 4) dFimRef.current?.focus()
+            }}
+          />
+
+          <Text style={{ marginHorizontal: 10, fontWeight: 'bold' }}>até</Text>
+
+          <TextInput
+            ref={dFimRef}
+            placeholder="dd"
+            keyboardType="numeric"
+            maxLength={2}
+            style={{ width: 40, textAlign: 'center', borderWidth: 1, borderColor: '#a1a1a1', borderRadius: 8 }}
+            value={dFim}
+            onChangeText={(text) => {
+              setDFim(text);
+              if (text.length === 2) mFimRef.current?.focus()
+            }}
+          />
+          <Text style={{ marginHorizontal: 4 }}>/</Text>
+          <TextInput
+            ref={mFimRef}
+            placeholder="mm"
+            keyboardType="numeric"
+            maxLength={2}
+            style={{ width: 44, textAlign: 'center', borderWidth: 1, borderColor: '#a1a1a1', borderRadius: 8 }}
+            value={mFim}
+            onChangeText={(text) => {
+              setMFim(text);
+              if (text.length === 2) aFimRef.current?.focus()
+            }}
+          />
+          <Text style={{ marginHorizontal: 4 }}>/</Text>
+          <TextInput
+            ref={aFimRef}
+            placeholder="aaaa"
+            keyboardType="numeric"
+            maxLength={4}
+            style={{ width: 62, textAlign: 'center', borderWidth: 1, borderColor: '#a1a1a1', borderRadius: 8 }}
+            value={aFim}
+            onChangeText={(text) => setAFim(text)}
+          />
+        </View>
+
+        <Button title="Filtrar" onPress={filtrarQuantBatidas} />
+      </View>
+
+      {quantBatidas &&
+        <View style={{ marginBottom: 16 }}>
+          <Text>Quantidade de batidas no período:</Text>
+          <FlatList
+            data={quantBatidas}
+            keyExtractor={item => String(item.funcionario_id)}
+            renderItem={({ item }) =>
+              <View
+                key={item.funcionario_id}
+                style={{
+                  flexDirection: 'row',
+                  justifyContent: 'space-between',
+                  gap: 16,
+                  padding: 4,
+                  borderBottomWidth: 1,
+                  borderBottomColor: '#e2e2e2'
+                }}
+              >
+                <Text style={{ width: 100, textAlign: 'left' }}>{item.nome}</Text>
+                <Text style={{ width: 150, textAlign: 'center' }}>{item.dias_com_batidas}</Text>
+              </View>
+            }
+          />
+        </View>
+      }
+
+      {/* LISTA DE FUNCIONARIOS */}
       <View
         style={{
           flexDirection: 'row',
