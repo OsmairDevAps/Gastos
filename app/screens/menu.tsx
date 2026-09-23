@@ -60,7 +60,7 @@ export default function Menu() {
       <Modal
         visible={isModalBatidaVisible}
         animationType="slide"
-        transparent={true}
+        transparent={false}
         onRequestClose={handleCloseModalBatida}
       >
         <ListaBatidas closeModal={setIsModalBatidaVisible} />
@@ -69,7 +69,7 @@ export default function Menu() {
       <Modal
         visible={isModalFuncionarioVisible}
         animationType="slide"
-        transparent={true}
+        transparent={false}
         onRequestClose={handleCloseModalFuncionario}
       >
         <Funcionario closeModal={setIsModalFuncionarioVisible} />

@@ -131,6 +131,8 @@ export default function Produto() {
           <TextInput
             ref={inputRef}
             style={frmStyles.input}
+            autoCapitalize="characters"
+            placeholderTextColor="#636262"
             placeholder="Produto"
             onChangeText={(text) => setPesquisaProduto(text.toUpperCase())}
           />

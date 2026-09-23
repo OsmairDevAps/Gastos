@@ -15,7 +15,7 @@ import { useTransaction } from '@/database/useTransaction'
 import { IBatida, IFuncionario, ITransaction } from '@/utils/interface'
 import ViewTransaction from '../screens/viewtransaction'
 import styles from '@/styles/home'
-import { useFocusEffect } from '@react-navigation/native'
+import { useFocusEffect } from 'expo-router'
 import frmStyles from '@/styles/form'
 import { useUsuario } from '@/database/useUsuario'
 import { supabase } from '@/database/supabase'
@@ -41,7 +41,7 @@ export default function Home() {
   const [senha, setSenha] = useState('')
   const dt = new Date().getMonth()
   const [mes, setMes] = useState(String(dt + 1))
-  const [ano, setAno] = useState('2025')
+  const [ano, setAno] = useState(String(new Date().getFullYear()))
   const [totalDesp, setTotalDesp] = useState(0)
   const [totalRec, setTotalRec] = useState(0)
   const [despesas, setDespesas] = useState<ITransaction[]>([])

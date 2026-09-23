@@ -2,6 +2,17 @@ import { supabase } from "./supabase";
 import { ITransaction } from "../utils/interface";
 
 export function useTransaction() {
+  async function listarCategoriasTransacoes(tipo: string) {
+    try {
+      const { data } = await supabase.from('categoriatransacao')
+        .select('*')
+        .eq('tipotransacao', tipo)
+      return data
+    } catch (error) {
+      throw error
+    }
+  }
+
   async function create(dataTransaction: Omit<ITransaction, "id">) {
     try {
       const insertedRow = await supabase
@@ -11,7 +22,8 @@ export function useTransaction() {
           tipo: dataTransaction.tipo,
           descricao: dataTransaction.descricao,
           quant: dataTransaction.quant,
-          valor: dataTransaction.valor
+          valor: dataTransaction.valor,
+          categoria: dataTransaction.categoria
         })
       return { insertedRow }
     } catch (error) {
@@ -28,7 +40,8 @@ export function useTransaction() {
           tipo: dataTransaction.tipo,
           descricao: dataTransaction.descricao,
           quant: dataTransaction.quant,
-          valor: dataTransaction.valor
+          valor: dataTransaction.valor,
+          categoria: dataTransaction.categoria
         })
         .eq('id', dataTransaction.id)
     } catch (error) {
@@ -68,5 +81,5 @@ export function useTransaction() {
     }
   }
 
-  return { create, update, remove, list, searchById }
+  return { listarCategoriasTransacoes, create, update, remove, list, searchById }
 }

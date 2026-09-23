@@ -28,7 +28,8 @@ export default function Funcionario({ closeModal }: Props) {
   return (
     <View style={{
       flexDirection: 'column',
-      marginTop: 160,
+      marginTop: 10,
+      flex: 1,
       marginHorizontal: 8,
       paddingHorizontal: 8,
       borderWidth: 1,
@@ -55,7 +56,7 @@ export default function Funcionario({ closeModal }: Props) {
       >
         <Text style={{ fontWeight: '600', width: 150, textAlign: 'left' }}>NOME</Text>
         <Text style={{ fontWeight: '600', width: 50, textAlign: 'center' }}>PIN</Text>
-        <Text style={{ fontWeight: '600', width: 50, textAlign: 'center' }}>ATIVO</Text>
+        <Text style={{ fontWeight: '600', width: 60, textAlign: 'center' }}>ATIVO</Text>
       </View>
 
       {

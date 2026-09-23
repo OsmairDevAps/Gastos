@@ -17,17 +17,17 @@ export default function AdicionaProduto({ setIsModalOpen, listaAtualizar }: Prop
   const [categoria, setCategoria] = useState('')
   const [produto, setProduto] = useState('')
   const [medida, setMedida] = useState('')
-  
+
   function Close() {
     setIsModalOpen(false)
   }
 
   const CaixaAlta = (valor: string) => {
-    return valor.toUpperCase() 
+    return valor.toUpperCase()
   }
 
   async function ListaCategorias() {
-    let arrayCategoria:string[] = []
+    let arrayCategoria: string[] = []
     try {
       const response = await produtosDatabase.listarCategorias()
       if (response) {
@@ -58,9 +58,9 @@ export default function AdicionaProduto({ setIsModalOpen, listaAtualizar }: Prop
     }
   }
 
-  useEffect(()=> {
+  useEffect(() => {
     ListaCategorias()
-  },[])
+  }, [])
 
   return (
     <View style={styles.modal}>
@@ -72,25 +72,25 @@ export default function AdicionaProduto({ setIsModalOpen, listaAtualizar }: Prop
       <View style={frmStyles.container}>
         <View style={frmStyles.grupoInput}>
           <Text style={frmStyles.label}>Categoria:</Text>
-          <SelectWithInput options={categorias} onSelect={setCategoria} />          
+          <SelectWithInput options={categorias} onSelect={setCategoria} />
         </View>
 
         <View style={frmStyles.grupoInput}>
           <Text style={frmStyles.label}>Produto:</Text>
-          <TextInput 
+          <TextInput
             style={frmStyles.input}
             value={produto}
-            onChangeText={(text)=>setProduto(CaixaAlta(text))}
+            onChangeText={(text) => setProduto(CaixaAlta(text))}
           />
         </View>
 
         <View style={frmStyles.grupoInput}>
           <Text style={frmStyles.label}>Unidade de medida:</Text>
-          <TextInput 
+          <TextInput
             style={frmStyles.input}
             value={medida}
             placeholder="metros, litros, kg, un"
-            onChangeText={(text)=>setMedida(CaixaAlta(text))}
+            onChangeText={(text) => setMedida(CaixaAlta(text))}
           />
         </View>
 

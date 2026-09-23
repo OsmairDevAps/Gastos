@@ -27,18 +27,8 @@ type TQuantBatidas = {
 }
 
 export default function ListaBatidas({ closeModal }: Props) {
-  const [dIni, setDIni] = useState('')
-  const [mIni, setMIni] = useState('')
-  const [aIni, setAIni] = useState('')
-  const [dFim, setDFim] = useState('')
-  const [mFim, setMFim] = useState('')
-  const [aFim, setAFim] = useState('')
-  // Refs para controlar o foco
-  const mIniRef = useRef<TextInput>(null);
-  const aIniRef = useRef<TextInput>(null);
-  const dFimRef = useRef<TextInput>(null);
-  const mFimRef = useRef<TextInput>(null);
-  const aFimRef = useRef<TextInput>(null);
+  const [dateIni, setDateIni] = useState(new Date());
+  const [dateFim, setDateFim] = useState(new Date());
 
   const funcionarioDatabase = useFuncionario()
   const batidasDatabase = useBatida()
@@ -58,24 +48,44 @@ export default function ListaBatidas({ closeModal }: Props) {
     setIsListaFuncionarioAberta(false)
   }
 
-  const onChange = (event: DateTimePickerEvent, selectedDate?: Date) => {
+  const onChangeIni = (event: DateTimePickerEvent, selectedDate?: Date) => {
     if (event.type === 'set' && selectedDate) {
       const currentDate = selectedDate;
-      setDiaPonto(currentDate);
+      setDateIni(currentDate);
     }
   };
 
-  const showMode = (currentMode: DateTimePickerMode) => {
+  const onChangeFim = (event: DateTimePickerEvent, selectedDate?: Date) => {
+    if (event.type === 'set' && selectedDate) {
+      const currentDate = selectedDate;
+      setDateFim(currentDate);
+    }
+  };
+
+  const showModeIni = (currentMode: DateTimePickerMode) => {
     DateTimePickerAndroid.open({
-      value: diaPonto,
-      onChange,
+      value: dateIni,
+      onChange: onChangeIni,
       mode: currentMode,
       is24Hour: true,
     });
   };
 
-  const showDatepicker = () => {
-    showMode('date');
+  const showModeFim = (currentMode: DateTimePickerMode) => {
+    DateTimePickerAndroid.open({
+      value: dateFim,
+      onChange: onChangeFim,
+      mode: currentMode,
+      is24Hour: true,
+    });
+  };
+
+  const showDatepickerIni = () => {
+    showModeIni('date');
+  };
+
+  const showDatepickerFim = () => {
+    showModeFim('date');
   };
 
   function Close() {
@@ -97,8 +107,8 @@ export default function ListaBatidas({ closeModal }: Props) {
   }
 
   async function filtrarBatidas() {
-    const diaInicial = dIni + '/' + mIni + '/' + aIni
-    const diaFinal = dFim + '/' + mFim + '/' + aFim
+    const diaInicial = dateIni.toLocaleDateString()
+    const diaFinal = dateFim.toLocaleDateString()
     const { data, error } = await batidasDatabase.listarBatidasPorPeriodo(diaInicial, diaFinal)
     if (data) {
       setBatidas(data)
@@ -108,8 +118,8 @@ export default function ListaBatidas({ closeModal }: Props) {
   }
 
   async function filtrarQuantBatidas() {
-    const diaInicial = dIni + '/' + mIni + '/' + aIni
-    const diaFinal = dFim + '/' + mFim + '/' + aFim
+    const diaInicial = dateIni.toLocaleDateString()
+    const diaFinal = dateFim.toLocaleDateString()
     const { data, error } = await batidasDatabase.listarQuantidadeBatidasPorPeriodo(diaInicial, diaFinal)
     if (data) {
       setQuantBatidas(data)
@@ -124,7 +134,8 @@ export default function ListaBatidas({ closeModal }: Props) {
   return (
     <View style={{
       flexDirection: 'column',
-      marginTop: 160,
+      flex: 1,
+      marginTop: 10,
       marginHorizontal: 8,
       paddingHorizontal: 8,
       borderWidth: 1,
@@ -149,7 +160,50 @@ export default function ListaBatidas({ closeModal }: Props) {
 
       <View style={{ marginBottom: 20 }}>
         <Text style={{ fontWeight: 'bold', margin: 10 }}>Periodo:</Text>
-        <View style={{ display: 'flex', flexDirection: 'row', justifyContent: 'flex-start', alignItems: 'center', marginBottom: 10 }}>
+        <View style={{
+          flexDirection: 'row',
+          justifyContent: 'center',
+          alignItems: 'center',
+          gap: 2
+        }}>
+          <TouchableOpacity
+            onPress={showDatepickerIni}
+            style={{
+              marginTop: 8,
+              marginBottom: 8,
+              width: '45%',
+              height: 50,
+              borderRadius: 8,
+              padding: 8,
+              borderWidth: 1,
+              borderColor: '#cbc9c9',
+              backgroundColor: '#eaeaea',
+            }}
+          >
+            <Text style={{ fontSize: 20, color: '#636262' }}>{dateIni.toLocaleDateString()}</Text>
+          </TouchableOpacity>
+
+          <Text style={{ marginHorizontal: 10, fontWeight: 'bold' }}>até</Text>
+
+          <TouchableOpacity
+            onPress={showDatepickerFim}
+            style={{
+              marginTop: 8,
+              marginBottom: 8,
+              width: '45%',
+              height: 50,
+              borderRadius: 8,
+              padding: 8,
+              borderWidth: 1,
+              borderColor: '#cbc9c9',
+              backgroundColor: '#eaeaea',
+            }}
+          >
+            <Text style={{ fontSize: 20, color: '#636262' }}>{dateFim.toLocaleDateString()}</Text>
+          </TouchableOpacity>
+        </View>
+
+        {/* <View style={{ display: 'flex', flexDirection: 'row', justifyContent: 'flex-start', alignItems: 'center', marginBottom: 10 }}>
           <TextInput
             placeholder="dd"
             keyboardType="numeric"
@@ -225,7 +279,7 @@ export default function ListaBatidas({ closeModal }: Props) {
             value={aFim}
             onChangeText={(text) => setAFim(text)}
           />
-        </View>
+        </View> */}
 
         <Button title="Filtrar" onPress={filtrarQuantBatidas} />
       </View>
@@ -297,7 +351,7 @@ export default function ListaBatidas({ closeModal }: Props) {
         }
 
         <TouchableOpacity
-          onPress={showDatepicker}
+          onPress={showDatepickerIni}
           style={{ width: 150 }}
         >
           <Text style={{ fontWeight: '600', textAlign: 'center' }}>DIA</Text>

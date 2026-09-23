@@ -21,7 +21,7 @@ export default function Compra() {
   const [date, setDate] = useState(new Date());
   const listaComprasDatabase = useListaCompras()
   const [listaCompras, setListaCompras] = useState<TListaCompraProps[]>([])
-  
+
   const onChange = (event: DateTimePickerEvent, selectedDate?: Date) => {
     if (event.type === 'set' && selectedDate) {
       const currentDate = selectedDate;
@@ -58,7 +58,7 @@ export default function Compra() {
     Alert.alert('Item excluído com sucesso!')
   }
 
-  useEffect(()=>{
+  useEffect(() => {
     listarProdutos(date.toLocaleDateString('pt-BR'))
   }, [date])
 
@@ -71,8 +71,8 @@ export default function Compra() {
       <View style={frmStyles.container}>
         <View style={frmStyles.grupoInput}>
           <Text style={frmStyles.label}>DIA:</Text>
-          <TouchableOpacity 
-            onPress={showDatepicker} 
+          <TouchableOpacity
+            onPress={showDatepicker}
             style={frmStyles.input}
           >
             <Text style={frmStyles.txtButton}>{date.toLocaleDateString('pt-BR')}</Text>

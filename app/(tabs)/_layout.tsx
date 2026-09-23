@@ -1,3 +1,5 @@
+// FALTA RESOLVER O DATEPICKER NO BATITAS DE PONTO
+
 import React from 'react';
 import { FontAwesome, FontAwesome5, FontAwesome6, MaterialIcons } from '@expo/vector-icons';
 import { Tabs } from 'expo-router';

@@ -1,7 +1,7 @@
 import { useContext, useState } from 'react';
 import { useRouter } from 'expo-router';
 import { AuthContext } from '@/context/AuthContext';
-import { View, Text, Image, TextInput, TouchableOpacity, Alert } from 'react-native';
+import { View, Text, Image, TextInput, TouchableOpacity, Alert, KeyboardAvoidingView, Platform } from 'react-native';
 import frmStyles from '@/styles/form';
 import { Feather } from '@expo/vector-icons';
 import { useFuncionario } from '@/database/useFuncionario';
@@ -34,43 +34,48 @@ export default function LoginScreen() {
   }
 
   return (
-    <View style={frmStyles.containerLogin}>
-      <Image source={require(imgTC)} width={32} />
+    <KeyboardAvoidingView behavior={Platform.OS === 'ios' ? 'padding' : 'height'} style={{ flex: 1 }}>
+      <View style={frmStyles.containerLogin}>
+        <Image source={require(imgTC)} width={32} />
 
-      <View style={frmStyles.grupoInputLogin}>
-        <Text style={frmStyles.label}>Nome do Funcionário:</Text>
-        <TextInput
-          placeholder="Funcionário"
-          value={nomeFuncionario}
-          onChangeText={setNomeFuncionario}
-          style={frmStyles.input}
-        />
-      </View>
-      <View style={frmStyles.grupoInputLogin}>
-        <Text style={frmStyles.label}>Pin:</Text>
-        <View style={{ flexDirection: 'row', justifyContent: 'flex-start', alignItems: 'center', gap: 8 }}>
+        <View style={frmStyles.grupoInputLogin}>
+          <Text style={frmStyles.label}>Nome do Funcionário:</Text>
           <TextInput
-            placeholder="****"
-            keyboardType='numeric'
-            value={pinFuncionario}
-            secureTextEntry={isUnVisiblePin}
-            onChangeText={setPinFuncionario}
-            style={frmStyles.inputPassword}
+            placeholder="Nome"
+            value={nomeFuncionario}
+            autoCapitalize='characters'
+            onChangeText={setNomeFuncionario}
+            placeholderTextColor="#636262"
+            style={frmStyles.input}
           />
-          <TouchableOpacity onPress={() => setIsUnVisiblePin(!isUnVisiblePin)}>
-            <Feather name={isUnVisiblePin ? 'eye-off' : 'eye'} size={20} />
-          </TouchableOpacity>
         </View>
+        <View style={frmStyles.grupoInputLogin}>
+          <Text style={frmStyles.label}>Pin:</Text>
+          <View style={{ flexDirection: 'row', justifyContent: 'flex-start', alignItems: 'center', gap: 8 }}>
+            <TextInput
+              placeholder="****"
+              keyboardType='numeric'
+              value={pinFuncionario}
+              placeholderTextColor="#636262"
+              secureTextEntry={isUnVisiblePin}
+              onChangeText={setPinFuncionario}
+              style={frmStyles.inputPassword}
+            />
+            <TouchableOpacity onPress={() => setIsUnVisiblePin(!isUnVisiblePin)}>
+              <Feather name={isUnVisiblePin ? 'eye-off' : 'eye'} size={20} />
+            </TouchableOpacity>
+          </View>
+        </View>
+
+        <TouchableOpacity
+          onPress={handleLogin}
+          style={frmStyles.btnsubmitLogin}
+        >
+          <Text style={frmStyles.txtsubmitLogin}>Entrar</Text>
+        </TouchableOpacity>
+
+        <Image source={require(imgOA)} width={32} />
       </View>
-
-      <TouchableOpacity
-        onPress={handleLogin}
-        style={frmStyles.btnsubmitLogin}
-      >
-        <Text style={frmStyles.txtsubmitLogin}>Entrar</Text>
-      </TouchableOpacity>
-
-      <Image source={require(imgOA)} width={32} />
-    </View>
+    </KeyboardAvoidingView>
   );
 }

@@ -5,6 +5,14 @@ export interface ITransaction {
   descricao: string;
   quant: string;
   valor: number;
+  categoria: string;
+}
+
+export interface ICategoriaTransacao {
+  id: number;
+  idtransacao: number;
+  tipotransacao: string;
+  categoria: string;
 }
 
 //produtoscompras

@@ -1,6 +1,6 @@
 import frmStyles from '@/styles/form';
 import React, { useState } from 'react';
-import { View, TextInput, FlatList, TouchableOpacity, Text, Keyboard, TouchableWithoutFeedback, StyleSheet } from 'react-native';
+import { View, TextInput, TouchableOpacity, Text, Keyboard, TouchableWithoutFeedback, StyleSheet } from 'react-native';
 
 type Props = {
   options: string[];
@@ -32,11 +32,11 @@ export default function SelectWithInput({ options, onSelect }: Props) {
     setShowOptions(false);
     setFilteredOptions([]);
     onSelect(item);
-    Keyboard.dismiss(); 
+    Keyboard.dismiss();
   };
 
   return (
-     <TouchableWithoutFeedback onPress={() => {
+    <TouchableWithoutFeedback onPress={() => {
       setShowOptions(false);
       Keyboard.dismiss();
     }}>
@@ -52,22 +52,23 @@ export default function SelectWithInput({ options, onSelect }: Props) {
         />
 
         {showOptions && (
-        <FlatList
-          style={styles.list}
-          data={filteredOptions.length > 0 ? filteredOptions : [input]}
-          keyExtractor={(item) => item}
-          renderItem={({ item }) => (
-            <TouchableOpacity
-              onPress={() => handleSelect(item)}
-              style={styles.option}
-            >
-              <Text>
-                {filteredOptions.length > 0 ? item : `Criar nova categoria: "${item}"`}
-              </Text>
-            </TouchableOpacity>
-          )}
-        />
-      )}
+          <View style={styles.list}>
+            {(filteredOptions.length > 0 ? filteredOptions : [input]).map(item => (
+              <TouchableOpacity
+                key={item}
+                onPress={() => handleSelect(item)}
+                style={styles.option}
+              >
+                <Text>
+                  {filteredOptions.length > 0
+                    ? item
+                    : `Criar nova categoria: "${item}"`}
+                </Text>
+              </TouchableOpacity>
+            ))}
+          </View>
+        )}
+
       </View>
     </TouchableWithoutFeedback>
   );
